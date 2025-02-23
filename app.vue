@@ -132,8 +132,7 @@ const sortedMarks = computed(() => {
 
 const calculateAverage = (key: 'mark' | 'percentage' | 'ects') => {
   return sortedMarks.value.length
-      ? parseFloat((sortedMarks.value.reduce((acc, mark) => acc + mark[key], 0) / sortedMarks.value.length).toFixed(2))
-      : 0;
+      ? parseFloat((sortedMarks.value.reduce((acc, mark) => acc + Number(mark[key]), 0))) : 0;
 };
 
 const saveMark = () => {
