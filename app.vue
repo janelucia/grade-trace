@@ -30,19 +30,19 @@
       <h2 class="text-2xl">Statistics</h2>
       <div class="stat place-items-center">
         <div class="stat-title">Average Mark</div>
-        <div class="stat-value">{{ (sortedMarks.reduce((acc, mark) => acc + mark.mark, 0) / sortedMarks.length).toFixed(2) }}</div>
+        <div class="stat-value">{{ (calculateAverage("mark") / sortedMarks.length).toFixed(2) }}</div>
       </div>
 
       <div class="stat place-items-center">
         <div class="stat-title">Average Percentage</div>
         <div class="stat-value text-secondary">
-          {{ (sortedMarks.reduce((acc, mark) => acc + mark.percentage, 0) / sortedMarks.length).toFixed(2) }}%
+          {{ (calculateAverage("percentage")/ sortedMarks.length).toFixed(2) }}%
         </div>
       </div>
 
       <div class="stat place-items-center">
         <div class="stat-title">Total ECTS</div>
-        <div class="stat-value">{{ sortedMarks.reduce((acc, mark) => acc + mark.ects, 0) }} ECTS</div>
+        <div class="stat-value">{{ (calculateAverage("ects")) }} ECTS</div>
       </div>
     </div>
 
@@ -88,6 +88,10 @@ const savedMarks = ref<{ moduleName: string; ects: number; semester: number; per
 const sortedMarks = computed(() => {
   return [...savedMarks.value].sort((a, b) => a.semester - b.semester);
 });
+
+const calculateAverage = (key: 'mark' | 'percentage' | 'ects') => {
+  return parseFloat((sortedMarks.value.reduce((acc, mark) => acc + mark[key], 0) / sortedMarks.value.length).toFixed(2));
+};
 
 const saveMark = () => {
   if (!moduleName.value || ects.value === null || semester.value === null || percentage.value === null || mark.value === null) {
