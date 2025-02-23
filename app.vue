@@ -26,27 +26,40 @@
       </fieldset>
     </div>
 
-    <div class="stats stats-vertical shadow">
+    <div v-if="sortedMarks.length > 0">
       <h2 class="text-2xl">Statistics</h2>
-      <div class="stat place-items-center">
-        <div class="stat-title">Average Mark</div>
-        <div class="stat-value">{{ (calculateAverage("mark") / sortedMarks.length).toFixed(2) }}</div>
-      </div>
+      <div class="stats stats-vertical shadow">
+        <div class="stat place-items-center">
+          <div class="stat-title">Average Mark</div>
+          <div class="stat-value">{{ (calculateAverage("mark") / sortedMarks.length).toFixed(2) }}</div>
+        </div>
 
-      <div class="stat place-items-center">
-        <div class="stat-title">Average Percentage</div>
-        <div class="stat-value text-secondary">
-          {{ (calculateAverage("percentage")/ sortedMarks.length).toFixed(2) }}%
+        <div class="stat place-items-center">
+          <div class="stat-title">Average Percentage</div>
+          <div class="stat-value text-secondary">
+            {{ (calculateAverage("percentage")/ sortedMarks.length).toFixed(2) }}%
+          </div>
+        </div>
+
+        <div class="stat place-items-center">
+          <div class="stat-title">Total ECTS</div>
+          <div class="stat-value">{{ (calculateAverage("ects")) }} ECTS</div>
         </div>
       </div>
 
-      <div class="stat place-items-center">
-        <div class="stat-title">Total ECTS</div>
-        <div class="stat-value">{{ (calculateAverage("ects")) }} ECTS</div>
-      </div>
-    </div>
+      <div>
+        <h2 class="text-2xl mb-4">Marks Progression Over Semesters</h2>
 
-    <div>
+        <div class="mb-4 flex items-center gap-2">
+          <label class="font-bold">Is a higher mark better?</label>
+          <input type="checkbox" v-model="isHigherMarkBetter" class="toggle toggle-primary" />
+        </div>
+
+        <div class="h-80">
+          <MarkChart :marks="sortedMarks" :isHigherMarkBetter="isHigherMarkBetter" />
+        </div>
+      </div>
+
       <h2 class="text-2xl mb-2">Saved Marks</h2>
 
       <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
@@ -59,6 +72,7 @@
             <th>ECTS</th>
             <th>%</th>
             <th>Mark</th>
+            <th>Delete</th>
           </tr>
           </thead>
           <tbody>
@@ -68,6 +82,9 @@
             <td>{{ mark.ects }}</td>
             <td>{{ mark.percentage }}%</td>
             <td>{{ mark.mark }}</td>
+            <td>
+              <button @click="deleteMark(index)" class="btn btn-error">Delete</button>
+            </td>
           </tr>
           </tbody>
         </table>
@@ -82,6 +99,7 @@ const ects = ref<number | null>(null);
 const semester = ref<number | null>(null);
 const percentage = ref<number | null>(null);
 const mark = ref<number | null>(null);
+const isHigherMarkBetter = ref(true);
 
 const savedMarks = ref<{ moduleName: string; ects: number; semester: number; percentage: number; mark: number }[]>([]);
 
@@ -126,7 +144,22 @@ const saveMark = () => {
   mark.value = null;
 };
 
+const deleteMark = (index: number) => {
+  const existingMarks = JSON.parse(localStorage.getItem('marks') || '[]');
+  existingMarks.splice(index, 1);
+  localStorage.setItem('marks', JSON.stringify(existingMarks));
+  savedMarks.value = existingMarks;
+};
+
+watch(isHigherMarkBetter, (newValue) => {
+  localStorage.setItem('isHigherMarkBetter', JSON.stringify(newValue));
+});
+
 onMounted(() => {
   savedMarks.value = JSON.parse(localStorage.getItem('marks') || '[]');
+  const storedPreference = localStorage.getItem('isHigherMarkBetter');
+  if (storedPreference !== null) {
+    isHigherMarkBetter.value = JSON.parse(storedPreference);
+  }
 });
 </script>
