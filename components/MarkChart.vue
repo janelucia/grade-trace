@@ -44,7 +44,7 @@ const createChart = () => {
   chartInstance = new Chart(chartCanvas.value, {
     type: 'line',
     data: {
-      labels: sortedMarks.map((mark) => `Semester ${mark.semester}`),
+      labels: sortedMarks.map((mark) => mark.moduleName),
       datasets: [
         {
           label: 'Marks Progression',
@@ -74,7 +74,7 @@ const createChart = () => {
         x: {
           title: {
             display: true,
-            text: 'Semester',
+            text: 'Module',
           },
         },
       },
