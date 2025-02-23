@@ -67,23 +67,39 @@
           <thead>
           <tr>
             <th>Semester</th>
-
             <th>Module Name</th>
             <th>ECTS</th>
             <th>%</th>
             <th>Mark</th>
-            <th>Delete</th>
+            <th>Adjust</th>
           </tr>
           </thead>
           <tbody>
           <tr v-for="(mark, index) in sortedMarks" :key="index">
-            <td>{{ mark.semester }}</td>
-            <td>{{ mark.moduleName }}</td>
-            <td>{{ mark.ects }}</td>
-            <td>{{ mark.percentage }}%</td>
-            <td>{{ mark.mark }}</td>
             <td>
-              <button @click="deleteMark(index)" class="btn btn-error">Delete</button>
+              <input v-if="editingIndex === index" v-model.number="editableMark.semester" type="number" class="input input-sm w-16" />
+              <span v-else>{{ mark.semester }}</span>
+            </td>
+            <td>
+              <input v-if="editingIndex === index" v-model="editableMark.moduleName" type="text" class="input input-sm" />
+              <span v-else>{{ mark.moduleName }}</span>
+            </td>
+            <td>
+              <input v-if="editingIndex === index" v-model.number="editableMark.ects" type="number" class="input input-sm w-16" />
+              <span v-else>{{ mark.ects }}</span>
+            </td>
+            <td>
+              <input v-if="editingIndex === index" v-model.number="editableMark.percentage" type="number" class="input input-sm w-16" />
+              <span v-else>{{ mark.percentage }}%</span>
+            </td>
+            <td>
+              <input v-if="editingIndex === index" v-model.number="editableMark.mark" type="number" class="input input-sm w-16" />
+              <span v-else>{{ mark.mark }}</span>
+            </td>
+            <td>
+              <button v-if="editingIndex === index" @click="saveEditedMark(index)" class="btn btn-success btn-sm">Save</button>
+              <button v-else @click="editMark(index)" class="btn btn-info btn-sm">Adjust</button>
+              <button @click="deleteMark(index)" class="btn btn-error btn-sm">Delete</button>
             </td>
           </tr>
           </tbody>
@@ -94,6 +110,7 @@
 </template>
 
 <script setup lang="ts">
+
 const moduleName = ref('');
 const ects = ref<number | null>(null);
 const semester = ref<number | null>(null);
@@ -103,12 +120,17 @@ const isHigherMarkBetter = ref(true);
 
 const savedMarks = ref<{ moduleName: string; ects: number; semester: number; percentage: number; mark: number }[]>([]);
 
+const editingIndex = ref<number | null>(null);
+const editableMark = ref({ moduleName: '', ects: 0, semester: 0, percentage: 0, mark: 0 });
+
 const sortedMarks = computed(() => {
   return [...savedMarks.value].sort((a, b) => a.semester - b.semester);
 });
 
 const calculateAverage = (key: 'mark' | 'percentage' | 'ects') => {
-  return parseFloat((sortedMarks.value.reduce((acc, mark) => acc + mark[key], 0) / sortedMarks.value.length).toFixed(2));
+  return sortedMarks.value.length
+      ? parseFloat((sortedMarks.value.reduce((acc, mark) => acc + mark[key], 0) / sortedMarks.value.length).toFixed(2))
+      : 0;
 };
 
 const saveMark = () => {
@@ -117,25 +139,9 @@ const saveMark = () => {
     return;
   }
 
-  if (moduleName.value === sortedMarks.value.find((m) => m.moduleName === moduleName.value)?.moduleName) {
-    alert('Module name already exists.');
-    return;
-  }
-
-  const newMark = {
-    moduleName: moduleName.value,
-    ects: ects.value,
-    semester: semester.value,
-    percentage: percentage.value,
-    mark: mark.value,
-  };
-
-  const existingMarks = JSON.parse(localStorage.getItem('marks') || '[]');
-
-  existingMarks.push(newMark);
-  localStorage.setItem('marks', JSON.stringify(existingMarks));
-
-  savedMarks.value = existingMarks;
+  const newMark = { moduleName: moduleName.value, ects: ects.value, semester: semester.value, percentage: percentage.value, mark: mark.value };
+  savedMarks.value.push(newMark);
+  localStorage.setItem('marks', JSON.stringify(savedMarks.value));
 
   moduleName.value = '';
   ects.value = null;
@@ -145,21 +151,24 @@ const saveMark = () => {
 };
 
 const deleteMark = (index: number) => {
-  const existingMarks = JSON.parse(localStorage.getItem('marks') || '[]');
-  existingMarks.splice(index, 1);
-  localStorage.setItem('marks', JSON.stringify(existingMarks));
-  savedMarks.value = existingMarks;
+  savedMarks.value.splice(index, 1);
+  localStorage.setItem('marks', JSON.stringify(savedMarks.value));
 };
 
-watch(isHigherMarkBetter, (newValue) => {
-  localStorage.setItem('isHigherMarkBetter', JSON.stringify(newValue));
-});
+const editMark = (index: number) => {
+  editingIndex.value = index;
+  editableMark.value = { ...savedMarks.value[index] };
+};
+
+const saveEditedMark = (index: number) => {
+  savedMarks.value[index] = { ...editableMark.value };
+  localStorage.setItem('marks', JSON.stringify(savedMarks.value));
+  editingIndex.value = null;
+};
 
 onMounted(() => {
   savedMarks.value = JSON.parse(localStorage.getItem('marks') || '[]');
   const storedPreference = localStorage.getItem('isHigherMarkBetter');
-  if (storedPreference !== null) {
-    isHigherMarkBetter.value = JSON.parse(storedPreference);
-  }
+  if (storedPreference !== null) isHigherMarkBetter.value = JSON.parse(storedPreference);
 });
 </script>
