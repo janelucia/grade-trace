@@ -12,7 +12,7 @@ Chart.register(...registerables);
 
 const props = defineProps<{
   marks: { semester: number; moduleName: string; mark: number }[];
-  isHigherMarkBetter: boolean; // Determines grading system
+  isHigherMarkBetter: boolean;
 }>();
 
 const chartCanvas = ref<HTMLCanvasElement | null>(null);
@@ -52,7 +52,7 @@ const createChart = () => {
           borderColor: 'rgba(75, 192, 192, 1)',
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           borderWidth: 2,
-          fill: true,
+          fill: false,
           tension: 0.4,
         },
       ],

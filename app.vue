@@ -10,29 +10,36 @@
       <fieldset class="fieldset w-full bg-base-200 border border-base-300 p-4 rounded-box">
         <legend class="fieldset-legend">Add mark</legend>
 
-        <label class="fieldset-label">Module name</label>
-        <input v-model="moduleName" type="text" class="input" placeholder="eg: Math 1" />
+        <div class="flex flex-col sm:flex-row gap-4">
+          <div class="flex flex-col gap-2 w-full">
+            <label class="fieldset-label">Module name</label>
+            <input v-model="moduleName" type="text" class="input w-full" placeholder="eg: Math 1" />
 
-        <label class="fieldset-label">ECTS</label>
-        <input v-model.number="ects" type="number" class="input" placeholder="eg: 7.5" />
+            <label class="fieldset-label">ECTS</label>
+            <input v-model.number="ects" type="number" class="input w-full" placeholder="eg: 7.5" />
 
-        <label class="fieldset-label">Semester</label>
-        <input v-model.number="semester" type="number" class="input" placeholder="eg: 1" />
+            <label class="fieldset-label">Semester</label>
+            <input v-model.number="semester" type="number" class="input w-full" placeholder="eg: 1" />
+          </div>
 
-        <label class="fieldset-label">Percentage</label>
-        <input v-model.number="percentage" type="number" class="input" placeholder="eg: 80" />
+          <div class="flex flex-col gap-2 w-full">
+            <label class="fieldset-label">Percentage</label>
+            <input v-model.number="percentage" type="number" class="input w-full" placeholder="eg: 80" />
 
-        <label class="fieldset-label">Mark</label>
-        <input v-model.number="mark" type="number" class="input" placeholder="eg: 2.0" />
+            <label class="fieldset-label">Mark</label>
+            <input v-model.number="mark" type="number" class="input w-full" placeholder="eg: 2.0" />
 
-        <button @click="saveMark" class="btn btn-primary mt-4">Add mark</button>
+            <button @click="saveMark" class="btn btn-primary mt-4">Add mark</button>
+          </div>
+        </div>
+
       </fieldset>
     </div>
 
     <div v-if="sortedMarks.length > 0">
       <h2 class="text-2xl">Statistics</h2>
-      <div class="w-full flex flex-col gap-4 items-center">
-        <div class="stats stats-vertical shadow">
+      <div class="w-full flex flex-col md:flex-row gap-4 items-center md:items-start md:justify-evenly">
+        <div class="stats stats-vertical sm:stats-horizontal shadow">
         <div class="stat place-items-center">
           <div class="stat-title">Average Mark</div>
           <div class="stat-value">{{ (calculateAverage("mark") / sortedMarks.length).toFixed(2) }}</div>
