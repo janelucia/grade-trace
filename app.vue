@@ -134,7 +134,7 @@ const editingIndex = ref<number | null>(null);
 const editableMark = ref({ moduleName: '', ects: 0, semester: 0, percentage: 0, mark: 0 });
 
 const sortedMarks = computed(() => {
-  return [...savedMarks.value].sort((a, b) => a.semester - b.semester);
+  return [...savedMarks.value].toSorted((a, b) => a.semester - b.semester);
 });
 
 const calculateAverage = (key: 'mark' | 'percentage' | 'ects') => {
