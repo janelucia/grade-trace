@@ -1,4 +1,5 @@
 <template>
+  <Analytics />
   <div class="p-4 flex flex-col gap-8 w-full relative">
     <div class="navbar bg-base-100 sticky top-0 w-full">
       <a class="btn btn-ghost text-xl">ReMark</a>
@@ -118,6 +119,7 @@
 </template>
 
 <script setup lang="ts">
+import { Analytics } from '@vercel/analytics/nuxt';
 
 const moduleName = ref('');
 const ects = ref<number | null>(null);
