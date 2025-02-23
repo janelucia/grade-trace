@@ -28,7 +28,8 @@
 
     <div v-if="sortedMarks.length > 0">
       <h2 class="text-2xl">Statistics</h2>
-      <div class="stats stats-vertical shadow">
+      <div class="w-full flex flex-col gap-4 items-center">
+        <div class="stats stats-vertical shadow">
         <div class="stat place-items-center">
           <div class="stat-title">Average Mark</div>
           <div class="stat-value">{{ (calculateAverage("mark") / sortedMarks.length).toFixed(2) }}</div>
@@ -48,9 +49,9 @@
       </div>
 
       <div>
-        <h2 class="text-2xl mb-4">Marks Progression Over Semesters</h2>
+        <h2 class="text-2xl">Marks Progression Over Semesters</h2>
 
-        <div class="mb-4 flex items-center gap-2">
+        <div class="flex items-center gap-2">
           <label class="font-bold">Is a higher mark better?</label>
           <input type="checkbox" v-model="isHigherMarkBetter" class="toggle toggle-primary" />
         </div>
@@ -59,9 +60,9 @@
           <MarkChart :marks="sortedMarks" :isHigherMarkBetter="isHigherMarkBetter" />
         </div>
       </div>
+      </div>
 
-      <h2 class="text-2xl mb-2">Saved Marks</h2>
-
+      <h2 class="text-2xl">Saved Marks</h2>
       <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
         <table class="table">
           <thead>
@@ -97,9 +98,11 @@
               <span v-else>{{ mark.mark }}</span>
             </td>
             <td>
-              <button v-if="editingIndex === index" @click="saveEditedMark(index)" class="btn btn-success btn-sm">Save</button>
-              <button v-else @click="editMark(index)" class="btn btn-info btn-sm">Adjust</button>
-              <button @click="deleteMark(index)" class="btn btn-error btn-sm">Delete</button>
+              <div class="flex gap-2">
+                <button v-if="editingIndex === index" @click="saveEditedMark(index)" class="btn btn-success btn-md">Save</button>
+                <button v-else @click="editMark(index)" class="btn btn-info btn-md"><Icon name="material-symbols:edit-outline"/></button>
+                <button @click="deleteMark(index)" class="btn btn-error btn-md"><Icon name="mdi:trash-can-outline"/></button>
+              </div>
             </td>
           </tr>
           </tbody>
