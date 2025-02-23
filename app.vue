@@ -2,7 +2,7 @@
   <div class="p-4 flex flex-col gap-8 w-full">
     <div class="flex flex-col gap-2">
       <h1 class="text-4xl">ReMark</h1>
-      <p class="text-lg">Add a new mark and see how you progressed in life :D</p>
+      <p class="text-lg">Add a new mark and see how you progressed in your studies :D</p>
 
       <fieldset class="fieldset w-full bg-base-200 border border-base-300 p-4 rounded-box">
         <legend class="fieldset-legend">Add mark</legend>
@@ -96,6 +96,11 @@ const calculateAverage = (key: 'mark' | 'percentage' | 'ects') => {
 const saveMark = () => {
   if (!moduleName.value || ects.value === null || semester.value === null || percentage.value === null || mark.value === null) {
     alert('Please fill in all fields.');
+    return;
+  }
+
+  if (moduleName.value === sortedMarks.value.find((m) => m.moduleName === moduleName.value)?.moduleName) {
+    alert('Module name already exists.');
     return;
   }
 
