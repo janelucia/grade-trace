@@ -1,7 +1,9 @@
 <template>
-  <div class="p-4 flex flex-col gap-8 w-full">
+  <div class="p-4 flex flex-col gap-8 w-full relative">
+    <div class="navbar bg-base-100 sticky top-0 w-full">
+      <a class="btn btn-ghost text-xl">ReMark</a>
+    </div>
     <div class="flex flex-col gap-2">
-      <h1 class="text-4xl">ReMark</h1>
       <p class="text-lg">Add a new mark and see how you progressed in your studies :D</p>
 
       <fieldset class="fieldset w-full bg-base-200 border border-base-300 p-4 rounded-box">
@@ -62,51 +64,54 @@
       </div>
       </div>
 
-      <h2 class="text-2xl">Saved Marks</h2>
-      <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-        <table class="table">
-          <thead>
-          <tr>
-            <th>Semester</th>
-            <th>Module Name</th>
-            <th>ECTS</th>
-            <th>%</th>
-            <th>Mark</th>
-            <th>Adjust</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="(mark, index) in sortedMarks" :key="index">
-            <td>
-              <input v-if="editingIndex === index" v-model.number="editableMark.semester" type="number" class="input input-sm w-16" />
-              <span v-else>{{ mark.semester }}</span>
-            </td>
-            <td>
-              <input v-if="editingIndex === index" v-model="editableMark.moduleName" type="text" class="input input-sm" />
-              <span v-else>{{ mark.moduleName }}</span>
-            </td>
-            <td>
-              <input v-if="editingIndex === index" v-model.number="editableMark.ects" type="number" class="input input-sm w-16" />
-              <span v-else>{{ mark.ects }}</span>
-            </td>
-            <td>
-              <input v-if="editingIndex === index" v-model.number="editableMark.percentage" type="number" class="input input-sm w-16" />
-              <span v-else>{{ mark.percentage }}%</span>
-            </td>
-            <td>
-              <input v-if="editingIndex === index" v-model.number="editableMark.mark" type="number" class="input input-sm w-16" />
-              <span v-else>{{ mark.mark }}</span>
-            </td>
-            <td>
-              <div class="flex gap-2">
-                <button v-if="editingIndex === index" @click="saveEditedMark(index)" class="btn btn-success btn-md">Save</button>
-                <button v-else @click="editMark(index)" class="btn btn-info btn-md"><Icon name="material-symbols:edit-outline"/></button>
-                <button @click="deleteMark(index)" class="btn btn-error btn-md"><Icon name="mdi:trash-can-outline"/></button>
-              </div>
-            </td>
-          </tr>
-          </tbody>
-        </table>
+      <div class="flex flex-col gap-4">
+        <h2 class="text-2xl">Saved Marks</h2>
+        <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Semester</th>
+              <th>Module Name</th>
+              <th>ECTS</th>
+              <th>%</th>
+              <th>Mark</th>
+              <th>Adjust</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(mark, index) in sortedMarks" :key="index">
+              <td>
+                <input v-if="editingIndex === index" v-model.number="editableMark.semester" type="number" class="input input-sm w-16" />
+                <span v-else>{{ mark.semester }}</span>
+              </td>
+              <td>
+                <input v-if="editingIndex === index" v-model="editableMark.moduleName" type="text" class="input input-sm" />
+                <span v-else>{{ mark.moduleName }}</span>
+              </td>
+              <td>
+                <input v-if="editingIndex === index" v-model.number="editableMark.ects" type="number" class="input input-sm w-16" />
+                <span v-else>{{ mark.ects }}</span>
+              </td>
+              <td>
+                <input v-if="editingIndex === index" v-model.number="editableMark.percentage" type="number" class="input input-sm w-16" />
+                <span v-else>{{ mark.percentage }}%</span>
+              </td>
+              <td>
+                <input v-if="editingIndex === index" v-model.number="editableMark.mark" type="number" class="input input-sm w-16" />
+                <span v-else>{{ mark.mark }}</span>
+              </td>
+              <td>
+                <div class="flex gap-2">
+                  <button v-if="editingIndex === index" @click="saveEditedMark(index)" class="btn btn-success btn-md">Save</button>
+                  <button v-else @click="editMark(index)" class="btn btn-info btn-md"><Icon name="material-symbols:edit-outline"/></button>
+                  <button @click="deleteMark(index)" class="btn btn-error btn-md"><Icon name="mdi:trash-can-outline"/></button>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+      </div>
+
       </div>
     </div>
   </div>
