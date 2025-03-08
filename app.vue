@@ -1,9 +1,10 @@
 <template>
   <Analytics />
-  <div class="p-4 flex flex-col gap-8 w-full relative">
-    <div class="navbar bg-base-100 sticky top-0 w-full">
-      <a class="btn btn-ghost text-xl">ReMark</a>
-    </div>
+  <header class="navbar bg-base-100 sticky top-0 w-full z-10">
+    <a class="btn btn-ghost text-xl">ReMark</a>
+  </header>
+  <main class="p-4 flex flex-col gap-8 w-full relative">
+
     <div class="flex flex-col gap-2">
       <p class="text-lg">Add a new mark and see how you progressed in your studies :D</p>
 
@@ -87,7 +88,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="(mark, index) in sortedMarks" :key="index">
+            <tr v-for="(mark, index) in savedMarks" :key="index">
               <td>
                 <input v-if="editingIndex === index" v-model.number="editableMark.semester" type="number" class="input input-sm w-16" />
                 <span v-else>{{ mark.semester }}</span>
@@ -122,7 +123,10 @@
 
       </div>
     </div>
-  </div>
+  </main>
+  <footer class="p-4 w-full flex justify-center">
+    <p>Made with <3</p>
+  </footer>
 </template>
 
 <script setup lang="ts">
@@ -145,8 +149,8 @@ const sortedMarks = computed(() => {
 });
 
 const calculateAverage = (key: 'mark' | 'percentage' | 'ects') => {
-  return sortedMarks.value.length
-      ? parseFloat((sortedMarks.value.reduce((acc, mark) => acc + Number(mark[key]), 0))) : 0;
+  return savedMarks.value.length
+      ? parseFloat((savedMarks.value.reduce((acc, mark) => acc + Number(mark[key]), 0))) : 0;
 };
 
 const saveMark = () => {
