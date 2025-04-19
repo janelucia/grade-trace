@@ -78,7 +78,12 @@
     </div>
   </main>
   <footer class="p-4 w-full flex justify-center">
-    <p>Made with <3</p>
+    <p>Made with <3 by</p>
+    <a href="https://github.com/janelucia" class="link link-neutral" target="_blank">Jane</a>
+    <a href="https://github.com/janelucia/remark" class="link link-neutral pl-4" target="_blank">
+      <Icon name="octicon:mark-github-16" />
+    </a>
+
   </footer>
 </template>
 
