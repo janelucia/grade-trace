@@ -7,6 +7,7 @@
         <legend class="fieldset-legend text-xl bg-base-200 rounded-lg p-0 px-2">Add a mark</legend>
 
         <div class="flex flex-col gap-4">
+
           <div class="flex flex-col sm:flex-row gap-4">
 
             <div class="flex flex-col gap-2 w-full">
@@ -30,10 +31,10 @@
 
           </div>
 
-          <div class="w-full flex justify-evenly items-center">
+          <div class="w-full flex justify-evenly items-center gap-2">
             <button @click="saveMark(false)" class="btn btn-primary">Save and add another</button>
             <button @click="saveMark(true)" class="btn btn-secondary">Save and close</button>
-            <button @click="closeModal" class="btn">Close</button>
+            <button @click="closeModal" class="btn">x</button>
           </div>
         </div>
 
@@ -46,7 +47,7 @@
 <script setup lang="ts">
 import { useMarks } from '~/composables/useMarks'
 
-const { savedMarks, addMark } = useMarks()
+const { addMark } = useMarks()
 
 
 const modal = ref(null)
