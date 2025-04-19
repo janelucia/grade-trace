@@ -1,77 +1,30 @@
 <template>
   <Analytics />
-  <header class="navbar bg-base-100 sticky top-0 w-full z-10">
-    <a class="btn btn-ghost text-xl">ReMark</a>
+  <header class="p-4 sticky top-0 w-full z-10 bg-base-100 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <NuxtImg src="./img/logo.png" alt="Logo" class="w-16 h-16" />
+      <p class="p-0 font-bold hidden sm:inline-block">Semester<br/>Scoreboard</p>
+    </div>
+    <AddModal button-class="btn-lg" id="header-modal"/>
   </header>
   <main class="p-4 flex flex-col gap-8 w-full relative">
+    <Hero
+        :average-mark="(calculateAverage('mark') / sortedMarks.length).toFixed(2)"
+        :average-percentage="(calculateAverage('percentage')/ sortedMarks.length).toFixed(2)"
+        :total-ects="calculateAverage('ects')"
+    >
+        <div>
+          <h2 class="text-2xl">Marks Progression Over Semesters</h2>
 
-    <div class="flex flex-col gap-2">
-      <p class="text-lg">Add a new mark and see how you progressed in your studies :D</p>
-
-      <fieldset class="fieldset w-full bg-base-200 border border-base-300 p-4 rounded-box">
-        <legend class="fieldset-legend">Add mark</legend>
-
-        <div class="flex flex-col sm:flex-row gap-4">
-          <div class="flex flex-col gap-2 w-full">
-            <label class="fieldset-label">Module name</label>
-            <input v-model="moduleName" type="text" class="input w-full" placeholder="eg: Math 1" />
-
-            <label class="fieldset-label">ECTS</label>
-            <input v-model.number="ects" type="number" class="input w-full" placeholder="eg: 7.5" />
-
-            <label class="fieldset-label">Semester</label>
-            <input v-model.number="semester" type="number" class="input w-full" placeholder="eg: 1" />
+          <div class="flex items-center gap-2">
+            <label class="font-bold">Is a higher mark better?</label>
+            <input type="checkbox" v-model="isHigherMarkBetter" class="toggle toggle-primary" />
           </div>
-
-          <div class="flex flex-col gap-2 w-full">
-            <label class="fieldset-label">Percentage</label>
-            <input v-model.number="percentage" type="number" class="input w-full" placeholder="eg: 80" />
-
-            <label class="fieldset-label">Mark</label>
-            <input v-model.number="mark" type="number" class="input w-full" placeholder="eg: 2.0" />
-
-            <button @click="saveMark" class="btn btn-primary mt-4">Add mark</button>
-          </div>
+            <MarkChart :marks-per-semester="averageMarksPerSemester" :isHigherMarkBetter="isHigherMarkBetter" />
         </div>
-
-      </fieldset>
-    </div>
+    </Hero>
 
     <div v-if="sortedMarks.length > 0">
-      <h2 class="text-2xl">Statistics</h2>
-      <div class="w-full flex flex-col md:flex-row gap-4 items-center md:items-start md:justify-evenly">
-        <div class="stats stats-vertical sm:stats-horizontal shadow">
-        <div class="stat place-items-center">
-          <div class="stat-title">Average Mark</div>
-          <div class="stat-value">{{ (calculateAverage("mark") / sortedMarks.length).toFixed(2) }}</div>
-        </div>
-
-        <div class="stat place-items-center">
-          <div class="stat-title">Average Percentage</div>
-          <div class="stat-value text-secondary">
-            {{ (calculateAverage("percentage")/ sortedMarks.length).toFixed(2) }}%
-          </div>
-        </div>
-
-        <div class="stat place-items-center">
-          <div class="stat-title">Total ECTS</div>
-          <div class="stat-value">{{ (calculateAverage("ects")) }} ECTS</div>
-        </div>
-      </div>
-
-      <div>
-        <h2 class="text-2xl">Marks Progression Over Semesters</h2>
-
-        <div class="flex items-center gap-2">
-          <label class="font-bold">Is a higher mark better?</label>
-          <input type="checkbox" v-model="isHigherMarkBetter" class="toggle toggle-primary" />
-        </div>
-
-        <div class="h-80">
-          <MarkChart :marks="sortedMarks" :isHigherMarkBetter="isHigherMarkBetter" />
-        </div>
-      </div>
-      </div>
 
       <div class="flex flex-col gap-4">
         <h2 class="text-2xl">Saved Marks</h2>
@@ -131,48 +84,29 @@
 
 <script setup lang="ts">
 import { Analytics } from '@vercel/analytics/nuxt';
+import type {Mark} from "~/types/types";
+import { useMarks } from '~/composables/useMarks'
 
-const moduleName = ref('');
-const ects = ref<number | null>(null);
-const semester = ref<number | null>(null);
-const percentage = ref<number | null>(null);
-const mark = ref<number | null>(null);
+const { savedMarks, loadMarks } = useMarks()
+
 const isHigherMarkBetter = ref(true);
 
-const savedMarks = ref<{ moduleName: string; ects: number; semester: number; percentage: number; mark: number }[]>([]);
-
 const editingIndex = ref<number | null>(null);
-const editableMark = ref({ moduleName: '', ects: 0, semester: 0, percentage: 0, mark: 0 });
+const editableMark = ref<Mark>({ moduleName: '', ects: 0, semester: 0, percentage: 0, mark: 0 });
 
 const sortedMarks = computed(() => {
   return [...savedMarks.value].toSorted((a, b) => a.semester - b.semester);
 });
 
-const calculateAverage = (key: 'mark' | 'percentage' | 'ects') => {
-  return savedMarks.value.length
-      ? parseFloat((savedMarks.value.reduce((acc, mark) => acc + Number(mark[key]), 0))) : 0;
-};
+const calculateTotal = (key: keyof Mark) =>
+    savedMarks.value.reduce((acc, mark) => acc + Number(mark[key]), 0);
 
-const saveMark = () => {
-  if (!moduleName.value || ects.value === null || semester.value === null || percentage.value === null || mark.value === null) {
-    alert('Please fill in all fields.');
-    return;
-  }
-
-  const newMark = { moduleName: moduleName.value, ects: ects.value, semester: semester.value, percentage: percentage.value, mark: mark.value };
-  savedMarks.value.push(newMark);
-  localStorage.setItem('marks', JSON.stringify(savedMarks.value));
-
-  moduleName.value = '';
-  ects.value = null;
-  semester.value = null;
-  percentage.value = null;
-  mark.value = null;
-};
+const calculateAverage = (key: keyof Mark) =>
+    savedMarks.value.length ? calculateTotal(key) / savedMarks.value.length : 0;
 
 const deleteMark = (index: number) => {
   savedMarks.value.splice(index, 1);
-  localStorage.setItem('marks', JSON.stringify(savedMarks.value));
+  persistMark();
 };
 
 const editMark = (index: number) => {
@@ -182,12 +116,34 @@ const editMark = (index: number) => {
 
 const saveEditedMark = (index: number) => {
   savedMarks.value[index] = { ...editableMark.value };
-  localStorage.setItem('marks', JSON.stringify(savedMarks.value));
+  persistMark();
   editingIndex.value = null;
 };
 
+const persistMark = () => {
+  localStorage.setItem('marks', JSON.stringify(savedMarks.value));
+};
+
+const averageMarksPerSemester = computed(() => {
+  const grouped: Record<number, number[]> = {};
+
+  savedMarks.value.forEach(({ semester, mark }) => {
+    grouped[semester] = grouped[semester] || [];
+    grouped[semester].push(mark);
+  });
+
+  return Object.entries(grouped).map(([semester, marks]) => ({
+    semester: Number(semester),
+    average: Number((marks.reduce((sum, m) => sum + m, 0) / marks.length).toFixed(2)),
+  }));
+});
+
+watch(isHigherMarkBetter, () => {
+  localStorage.setItem('isHigherMarkBetter', JSON.stringify(isHigherMarkBetter.value));
+})
+
 onMounted(() => {
-  savedMarks.value = JSON.parse(localStorage.getItem('marks') || '[]');
+  loadMarks();
   const storedPreference = localStorage.getItem('isHigherMarkBetter');
   if (storedPreference !== null) isHigherMarkBetter.value = JSON.parse(storedPreference);
 });

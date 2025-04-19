@@ -7,29 +7,33 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue';
 import { Chart, registerables } from 'chart.js';
+import type { MarksPerSemester } from '~/types/types';
 
 Chart.register(...registerables);
 
 const props = defineProps<{
-  marks: { semester: number; moduleName: string; mark: number }[];
+  marksPerSemester: MarksPerSemester[];
   isHigherMarkBetter: boolean;
 }>();
 
 const chartCanvas = ref<HTMLCanvasElement | null>(null);
 let chartInstance: Chart | null = null;
 
+// Compute dynamic Y-axis min and max
 const yAxisMin = computed(() => {
-  if (props.marks.length === 0) return 0;
+  if (props.marksPerSemester.length === 0) return 0;
+  const values = props.marksPerSemester.map((m) => m.average);
   return props.isHigherMarkBetter
-      ? Math.min(...props.marks.map((m) => m.mark)) - 1
-      : Math.min(0, Math.min(...props.marks.map((m) => m.mark)) - 1);
+      ? Math.min(...values) - 1
+      : Math.min(0, Math.min(...values) - 1);
 });
 
 const yAxisMax = computed(() => {
-  if (props.marks.length === 0) return 10;
+  if (props.marksPerSemester.length === 0) return 10;
+  const values = props.marksPerSemester.map((m) => m.average);
   return props.isHigherMarkBetter
-      ? Math.max(...props.marks.map((m) => m.mark)) + 1
-      : Math.max(...props.marks.map((m) => m.mark)) + 1;
+      ? Math.max(...values) + 1
+      : Math.max(...values) + 1;
 });
 
 const createChart = () => {
@@ -39,16 +43,16 @@ const createChart = () => {
     chartInstance.destroy();
   }
 
-  const sortedMarks = [...props.marks].sort((a, b) => a.semester - b.semester);
+  const sortedData = [...props.marksPerSemester].sort((a, b) => a.semester - b.semester);
 
   chartInstance = new Chart(chartCanvas.value, {
     type: 'line',
     data: {
-      labels: sortedMarks.map((mark) => mark.moduleName),
+      labels: sortedData.map((entry) => entry.semester),
       datasets: [
         {
-          label: 'Marks Progression',
-          data: sortedMarks.map((mark) => mark.mark),
+          label: 'Average Mark per Semester',
+          data: sortedData.map((entry) => entry.average),
           borderColor: 'rgba(75, 192, 192, 1)',
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           borderWidth: 2,
@@ -68,13 +72,13 @@ const createChart = () => {
           reverse: !props.isHigherMarkBetter,
           title: {
             display: true,
-            text: 'Mark',
+            text: 'Average Mark',
           },
         },
         x: {
           title: {
             display: true,
-            text: 'Module',
+            text: 'Semester',
           },
         },
       },
@@ -82,6 +86,11 @@ const createChart = () => {
   });
 };
 
+// Watch for prop changes and rebuild the chart
 onMounted(createChart);
-watch(() => [props.marks, props.isHigherMarkBetter], createChart, { deep: true });
+watch(
+    () => [props.marksPerSemester, props.isHigherMarkBetter],
+    createChart,
+    { deep: true }
+);
 </script>
