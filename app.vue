@@ -9,9 +9,9 @@
   </header>
   <main class="p-4 flex flex-col gap-8 w-full relative">
     <Hero
-        :average-mark="(calculateAverage('mark') / sortedMarks.length).toFixed(2)"
-        :average-percentage="(calculateAverage('percentage')/ sortedMarks.length).toFixed(2)"
-        :total-ects="calculateAverage('ects')"
+        :average-mark="calculateAverage('mark').toFixed(2)"
+        :average-percentage="calculateAverage('percentage').toFixed(2)"
+        :total-ects="calculateTotal('ects')"
     >
         <div>
           <h2 class="text-2xl">Marks Progression Over Semesters</h2>
