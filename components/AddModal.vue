@@ -2,7 +2,7 @@
   <button class="btn btn-primary" :class="buttonClass" @click="openModal">Add a Mark</button>
 
   <dialog ref="modal" :id=id class="modal modal-bottom sm:modal-middle">
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-2 w-full sm:w-2/3">
       <fieldset class="fieldset w-full bg-base-200 border border-base-300 p-4 rounded-box">
         <legend class="fieldset-legend text-xl bg-base-200 rounded-lg p-0 px-2">Add a mark</legend>
 
@@ -31,7 +31,7 @@
 
           </div>
 
-          <div class="w-full flex justify-evenly items-center gap-2">
+          <div class="modal-action">
             <button @click="saveMark(false)" class="btn btn-primary">Save and add another</button>
             <button @click="saveMark(true)" class="btn btn-secondary">Save and close</button>
             <button @click="closeModal" class="btn">x</button>
