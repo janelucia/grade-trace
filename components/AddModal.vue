@@ -1,5 +1,26 @@
 <template>
-  <button class="btn btn-primary" :class="buttonClass" @click="openModal">Add a Mark</button>
+  <button class="btn btn-primary" :class="buttonClass" @click="openModal">
+      <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+      >
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4v16m8-8H4"
+        />
+      </svg>
+      <span class="hidden sm:inline">
+       Add a
+      </span>
+    <span>
+       Mark
+      </span>
+    </button>
 
   <dialog ref="modal" :id=id class="modal modal-bottom sm:modal-middle">
     <div class="flex flex-col gap-2 w-full sm:w-2/3">
