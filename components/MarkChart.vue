@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import type { MarksPerSemester } from '~/types/types';
 
@@ -19,23 +19,6 @@ const props = defineProps<{
 const chartCanvas = ref<HTMLCanvasElement | null>(null);
 let chartInstance: Chart | null = null;
 
-// Compute dynamic Y-axis min and max
-const yAxisMin = computed(() => {
-  if (props.marksPerSemester.length === 0) return 0;
-  const values = props.marksPerSemester.map((m) => m.average);
-  return props.isHigherMarkBetter
-      ? Math.min(...values) - 1
-      : Math.min(0, Math.min(...values) - 1);
-});
-
-const yAxisMax = computed(() => {
-  if (props.marksPerSemester.length === 0) return 10;
-  const values = props.marksPerSemester.map((m) => m.average);
-  return props.isHigherMarkBetter
-      ? Math.max(...values) + 1
-      : Math.max(...values) + 1;
-});
-
 const createChart = () => {
   if (!chartCanvas.value) return;
 
@@ -44,6 +27,12 @@ const createChart = () => {
   }
 
   const sortedData = [...props.marksPerSemester].sort((a, b) => a.semester - b.semester);
+  const values = sortedData.map((entry) => entry.average);
+
+  if (values.length === 0) return;
+
+  const minY = Math.min(...values) - 1;
+  const maxY = Math.max(...values) + 1;
 
   chartInstance = new Chart(chartCanvas.value, {
     type: 'line',
@@ -52,7 +41,7 @@ const createChart = () => {
       datasets: [
         {
           label: 'Average Mark per Semester',
-          data: sortedData.map((entry) => entry.average),
+          data: values,
           borderColor: 'rgba(75, 192, 192, 1)',
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           borderWidth: 2,
@@ -67,8 +56,8 @@ const createChart = () => {
       scales: {
         y: {
           beginAtZero: false,
-          min: yAxisMin.value,
-          max: yAxisMax.value,
+          min: minY,
+          max: maxY,
           reverse: !props.isHigherMarkBetter,
           title: {
             display: true,
@@ -86,7 +75,6 @@ const createChart = () => {
   });
 };
 
-// Watch for prop changes and rebuild the chart
 onMounted(createChart);
 watch(
     () => [props.marksPerSemester, props.isHigherMarkBetter],
