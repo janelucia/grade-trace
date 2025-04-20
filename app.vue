@@ -5,7 +5,10 @@
       <NuxtImg src="./img/logo.png" alt="Logo" class="w-16 h-16" />
       <p class="p-0 font-bold hidden sm:inline-block">Semester<br/>Scoreboard</p>
     </div>
-    <AddModal button-class="btn-lg" id="header-modal"/>
+    <div class="flex gap-2">
+      <UploadModal id="file_upload_header"/>
+      <AddModal button-class="btn-lg" id="header-modal"/>
+    </div>
   </header>
   <main class="p-4 flex flex-col gap-8 w-full relative">
     <Hero

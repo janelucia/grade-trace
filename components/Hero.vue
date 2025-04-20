@@ -8,7 +8,10 @@
             <p class="text-2xl">Your Progress.</p>
           </div>
           <h2 class="text-4xl font-bold">Make a mark today!</h2>
-          <AddModal button-class="btn-lg w-1/2 self-end sm:self-start" id="hero-modal" />
+          <div class="flex gap-2 items-center justify-center sm:justify-start flex-wrap">
+            <AddModal button-class="btn-lg" id="hero-modal" />
+            <UploadModal id="file_upload_hero"/>
+          </div>
         </div>
         <div class="flex flex-col gap-2w-full items-end">
           <NuxtImg class="w-full h-full object-cover rounded-lg" src="img/hero-pic.png" alt="Hero Image" />
