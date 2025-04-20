@@ -17,13 +17,11 @@
         :total-ects="calculateTotal('ects')"
     >
         <div>
-          <h2 class="text-2xl">Marks Progression Over Semesters</h2>
-
+          <MarkChart :marks-per-semester="averageMarksPerSemester" :isHigherMarkBetter="isHigherMarkBetter" />
           <div class="flex items-center gap-2">
             <label class="font-bold">Is a higher mark better?</label>
             <input type="checkbox" v-model="isHigherMarkBetter" class="toggle toggle-primary" />
           </div>
-            <MarkChart :marks-per-semester="averageMarksPerSemester" :isHigherMarkBetter="isHigherMarkBetter" />
         </div>
     </Hero>
 

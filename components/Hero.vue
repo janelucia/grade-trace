@@ -2,7 +2,7 @@
   <div class="w-full flex flex-col gap-8">
     <div class="w-full flex items-center">
       <div class="w-full flex flex-col-reverse sm:flex-row justify-between items-center gap-4">
-        <div class="w-full h-full flex flex-col gap-4 py-8 sm:py-0">
+        <div class="w-full h-full flex flex-col gap-4 sm:gap-8 py-8 sm:py-0">
           <div class="flex flex-col gap-2">
             <p class="text-2xl">Your Journey,</p>
             <p class="text-2xl">Your Progress.</p>
@@ -21,12 +21,16 @@
         </div>
       </div>
     </div>
-    <div class="flex gap-4 justify-evenly flex-wrap">
-        <StatisticField :displayed-number="averageMark" description="Average Mark" />
-        <StatisticField :displayed-number="averagePercentage" description="Average Percentage"/>
-        <StatisticField :displayed-number="totalEcts" description="Total ECTS" />
+    <div class="w-full flex justify-between gap-4 flex-wrap sm:flex-nowrap">
+      <div class="w-full">
+        <slot />
+      </div>
+      <div class="flex gap-4 justify-evenly flex-wrap">
+          <StatisticField :displayed-number="averageMark" description="Average Mark" />
+          <StatisticField :displayed-number="averagePercentage" description="Average Percentage"/>
+          <StatisticField :displayed-number="totalEcts" description="Total ECTS" />
+      </div>
     </div>
-    <slot/>
   </div>
 </template>
 
