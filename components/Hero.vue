@@ -13,11 +13,8 @@
             <UploadModal id="file_upload_hero"/>
           </div>
         </div>
-        <div class="flex flex-col gap-2w-full items-end">
+        <div class="flex flex-col gap-2 w-full items-end">
           <NuxtImg class="w-full h-full object-cover rounded-lg" src="img/hero-pic.png" alt="Hero Image" />
-          <div class="tooltip hover:tooltip-open tooltip-left tooltip-info absolute" data-tip="This image is AI generated.">
-            <button class="btn btn-info">i</button>
-          </div>
         </div>
       </div>
     </div>
