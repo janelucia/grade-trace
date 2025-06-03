@@ -15,7 +15,7 @@
     </main>
     <footer class="p-4 w-full flex justify-center items-center gap-4">
       <div class="flex">
-        <p>Made with <3 by</p>
+        <p>Made with ❤️ by</p>
         <a href="https://github.com/janelucia" class="link link-neutral pl-1" target="_blank">Jane</a>
       </div>
       <a href="https://github.com/janelucia/remark" class="link link-neutral flex items-center" target="_blank">
