@@ -26,29 +26,73 @@ const createChart = () => {
     chartInstance.destroy();
   }
 
-  const sortedData = [...props.marksPerSemester].sort((a, b) => a.semester - b.semester);
-  const values = sortedData.map((entry) => entry.average);
+  const values = props.marksPerSemester
+      .map((entry) => entry.average)
+      .filter((v): v is number => v !== undefined);
 
   if (values.length === 0) return;
 
   const minY = Math.min(...values) - 1;
   const maxY = Math.max(...values) + 1;
 
+  const actual = props.marksPerSemester
+      .filter(m => typeof m.average === 'number')
+      .map(m => ({ x: m.semester, y: m.average! }));
+
+  const lastActual = actual.at(-1);
+
+  const best = props.marksPerSemester
+      .filter(m => typeof m.best === 'number')
+      .map(m => ({ x: m.semester, y: m.best! }));
+
+  const worst = props.marksPerSemester
+      .filter(m => typeof m.worst === 'number')
+      .map(m => ({ x: m.semester, y: m.worst! }));
+
+  if (lastActual) {
+    best.unshift({ x: lastActual.x, y: lastActual.y });
+    worst.unshift({ x: lastActual.x, y: lastActual.y });
+  }
+
+
+  const datasets = [
+    {
+      label:  'Average ' + ((worst.length > 1) ? 'cumulated' : '/ Semester' ),
+      data: actual,
+      borderColor: 'rgba(75, 192, 192, 1)',
+      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      borderWidth: 2,
+      fill: false,
+      tension: 0.4,
+    }
+  ];
+
+  if (worst.length > 1) {
+    datasets.push({
+      label: 'Worst Case',
+      data: worst,
+      borderColor: 'red',
+      borderDash: [10, 5],
+      borderWidth: 2,
+      fill: false,
+      tension: 0,
+    },
+    {
+      label: 'Best Case',
+      data: best,
+      borderColor: 'green',
+      borderDash: [10, 5],
+      borderWidth: 2,
+      fill: false,
+      tension: 0,
+    });
+  }
+
+
   chartInstance = new Chart(chartCanvas.value, {
     type: 'line',
     data: {
-      labels: sortedData.map((entry) => entry.semester),
-      datasets: [
-        {
-          label: 'Average Mark per Semester',
-          data: values,
-          borderColor: 'rgba(75, 192, 192, 1)',
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          borderWidth: 2,
-          fill: false,
-          tension: 0.4,
-        },
-      ],
+      datasets: datasets
     },
     options: {
       responsive: true,
@@ -65,10 +109,15 @@ const createChart = () => {
           },
         },
         x: {
+          type: 'linear',
           title: {
             display: true,
             text: 'Semester',
           },
+          ticks: {
+            stepSize: 1,
+            precision: 0,
+          }
         },
       },
     },

@@ -7,7 +7,7 @@
       </div>
       <div class="flex gap-2">
         <UploadModal id="file_upload_header"/>
-        <AddModal button-class="btn-lg" id="header-modal"/>
+        <AddModal id="header-modal"/>
       </div>
     </header>
     <main class="flex-1 p-4 flex flex-col gap-8 w-full relative">
@@ -27,5 +27,3 @@
     </footer>
   </div>
 </template>
-<script setup lang="ts">
-</script>

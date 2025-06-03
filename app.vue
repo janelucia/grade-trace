@@ -2,17 +2,55 @@
   <NuxtLayout>
     <Hero />
     <div v-if="sortedMarks.length > 0" class="w-full flex justify-between gap-4 flex-wrap sm:flex-nowrap">
-      <div class="w-full">
-        <MarkChart :marks-per-semester="averageMarksPerSemester" :isHigherMarkBetter="isHigherMarkBetter" />
-        <div class="flex items-center gap-2">
-          <label class="font-bold">Is a higher mark better?</label>
-          <input type="checkbox" v-model="isHigherMarkBetter" class="toggle toggle-primary" />
+      <div class="w-full flex flex-col gap-4">
+        <div class="flex justify-between items-center gap-4">
+          <h2 class="text-2xl">Statistics</h2>
+          <div class="flex items-center gap-2">
+            <label class="font-bold">Is a higher mark better?</label>
+            <input type="checkbox" v-model="isHigherMarkBetter" class="toggle toggle-primary" />
+          </div>
         </div>
-      </div>
-      <div class="flex gap-4 justify-evenly flex-wrap">
-        <StatisticField :displayed-number="calculateAverage('mark').toFixed(2)" description="Average Mark" />
-        <StatisticField :displayed-number="calculateAverage('percentage').toFixed(2)" description="Average Percentage"/>
-        <StatisticField :displayed-number="calculateTotal('ects')" description="Total ECTS" />
+        <div class="flex gap-4 justify-evenly items-center flex-wrap">
+          <StatisticField :displayed-number="calculateAverage('mark').toFixed(2)" description="Average Mark" />
+          <StatisticField :displayed-number="calculateAverage('percentage').toFixed(2)" description="Average Percentage"/>
+          <StatisticField :displayed-number="calculateTotal('ects')" description="Total ECTS" />
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <div class="flex flex-col gap-2 sm:w-1/2 justify-between">
+            <h3 class="text-lg">Average Marks per Semester</h3>
+            <MarkChart :marks-per-semester="averageMarksPerSemester" :isHigherMarkBetter="isHigherMarkBetter" />
+          </div>
+          <div class="flex flex-col gap-2 sm:w-1/2">
+            <div class="flex items-center justify-between gap-2">
+              <h3 class="text-lg">Average Marks over the Semesters + Future</h3>
+              <button class="btn mb-2" @click="openModal">
+                ⚙️
+              </button>
+              <dialog class="modal modal-bottom sm:modal-middle w-full" ref="settingsModal" id="settingsModal">
+                <div class="flex flex-col gap-4 w-full sm:w-2/3 bg-base-100 p-4 rounded-box">
+                  <h3 class="text-xl font-semibold">Settings</h3>
+                  <p>
+                    Provide the total number of semesters and ECTS credits in your program to improve the accuracy of the grade projection.
+                  </p>
+                  <div class="flex flex-wrap gap-4">
+                    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-2">
+                      <label class="fieldset-legend bg-base-200 rounded-lg p-0 px-2">Total Number of Semesters</label>
+                      <input type="number" v-model.number="totalSemesters" class="input input-sm w-full" />
+                    </div>
+                    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-2">
+                      <label class="fieldset-legend bg-base-200 rounded-lg p-0 px-2">Total ECTS Credits</label>
+                      <input type="number" v-model.number="totalEcts" class="input input-sm w-full" />
+                    </div>
+                  </div>
+                  <div class="modal-action">
+                    <button @click="settingsModal?.close()" class="btn btn-secondary">Close</button>
+                  </div>
+                </div>
+              </dialog>
+            </div>
+            <MarkChart :marks-per-semester="cumulativeAverageWithProjection" :isHigherMarkBetter="isHigherMarkBetter" />
+          </div>
+        </div>
       </div>
     </div>
 
@@ -75,15 +113,22 @@
 </template>
 
 <script setup lang="ts">
-import type {Mark} from "~/types/types";
+import type {Mark, MarksPerSemester} from "~/types/types";
 import { useMarks } from '~/composables/useMarks'
 
 const { savedMarks, loadMarks } = useMarks()
 
 const isHigherMarkBetter = ref(true);
+const totalSemesters = ref(7);
+const totalEcts = ref(185);
+const settingsModal = ref(null);
 
 const editingIndex = ref<number | null>(null);
 const editableMark = ref<Mark>({ moduleName: '', ects: 0, semester: 0, percentage: 0, mark: 0 });
+
+const openModal = () => {
+  settingsModal.value?.showModal();
+}
 
 const sortedMarks = computed(() => {
   return [...savedMarks.value].toSorted((a, b) => a.semester - b.semester);
@@ -134,13 +179,90 @@ const averageMarksPerSemester = computed(() => {
   }));
 });
 
+const cumulativeAverageWithProjection = computed(() => {
+  const grouped: Record<number, { mark: number; ects: number }[]> = {};
+  savedMarks.value.forEach(({ semester, mark, ects }) => {
+    if (!grouped[semester]) grouped[semester] = [];
+    grouped[semester].push({ mark, ects });
+  });
+
+  const sortedSemesters = Object.keys(grouped)
+      .map(Number)
+      .sort((a, b) => a - b);
+
+  const result: MarksPerSemester[] = [];
+
+  let weightedSum = 0;
+  let completedEcts = 0;
+
+  for (const semester of sortedSemesters) {
+    const entries = grouped[semester];
+    for (const entry of entries) {
+      weightedSum += entry.mark * entry.ects;
+      completedEcts += entry.ects;
+    }
+
+    result.push({
+      semester,
+      average: Number((weightedSum / completedEcts).toFixed(2)),
+    });
+  }
+
+  const remainingEcts = totalEcts.value - completedEcts;
+  const remainingSemesters = totalSemesters.value - (sortedSemesters.at(-1) ?? 0);
+  const futureSemesters = Array.from({ length: remainingSemesters }, (_, i) => (sortedSemesters.at(-1) ?? 0) + i + 1);
+  const baseEcts = Math.floor(remainingEcts / remainingSemesters);
+  const leftover = remainingEcts % remainingSemesters;
+
+  const ectsDistribution = futureSemesters.map((_, i) =>
+      i < leftover ? baseEcts + 1 : baseEcts
+  );
+
+  let bestSum = weightedSum;
+  let worstSum = weightedSum;
+  let runningEcts = completedEcts;
+
+  for (let i = 0; i < futureSemesters.length; i++) {
+    const semester = futureSemesters[i];
+    const ects = ectsDistribution[i];
+
+    runningEcts += ects;
+    bestSum += (isHigherMarkBetter.value ? 5.0 : 1.0) * ects;
+    worstSum += (isHigherMarkBetter.value ? 1.0 : 4.0) * ects;
+
+    result.push({
+      semester,
+      best: Number((bestSum / runningEcts).toFixed(2)),
+      worst: Number((worstSum / runningEcts).toFixed(2)),
+    });
+  }
+
+  return result;
+});
+
+
 watch(isHigherMarkBetter, () => {
   localStorage.setItem('isHigherMarkBetter', JSON.stringify(isHigherMarkBetter.value));
 })
 
+watch(totalSemesters, () => {
+  localStorage.setItem('totalSemesters', JSON.stringify(totalSemesters.value));
+})
+watch(totalEcts, () => {
+  localStorage.setItem('totalEcts', JSON.stringify(totalEcts.value));
+})
+
+const storedPreference = () => {
+  const higherMarkPref = localStorage.getItem('isHigherMarkBetter');
+  const semestersPref = localStorage.getItem('totalSemesters');
+  const ectsPref = localStorage.getItem('totalEcts');
+  if (higherMarkPref !== null) isHigherMarkBetter.value = JSON.parse(higherMarkPref);
+  if (semestersPref !== null) totalSemesters.value = JSON.parse(semestersPref);
+  if (ectsPref !== null) totalEcts.value = JSON.parse(ectsPref);
+};
+
 onMounted(() => {
   loadMarks();
-  const storedPreference = localStorage.getItem('isHigherMarkBetter');
-  if (storedPreference !== null) isHigherMarkBetter.value = JSON.parse(storedPreference);
+  storedPreference();
 });
 </script>

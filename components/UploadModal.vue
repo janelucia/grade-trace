@@ -1,5 +1,5 @@
 <template>
-  <button  class="btn btn-lg" @click="openModal">
+  <button class="btn" :class="btnClass" @click="openModal">
     <svg
         xmlns="http://www.w3.org/2000/svg"
         class="w-6 h-6"
@@ -45,6 +45,7 @@ import * as XLSX from "xlsx";
 
 defineProps<{
   id: string;
+  btnClass?: string;
 }>()
 
 const modal = ref(null)

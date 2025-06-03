@@ -10,7 +10,7 @@
           <h2 class="text-4xl font-bold">Make a mark today!</h2>
           <div class="flex gap-2 items-center justify-center sm:justify-start flex-wrap">
             <AddModal button-class="btn-lg" id="hero-modal" />
-            <UploadModal id="file_upload_hero"/>
+            <UploadModal id="file_upload_hero" btn-class="btn-lg"/>
           </div>
         </div>
         <div class="flex flex-col gap-2 w-full items-end">

@@ -8,5 +8,7 @@ export type Mark = {
 
 export type MarksPerSemester = {
     semester: number;
-    average: number;
+    average?: number;
+    best?: number;
+    worst?: number;
 };

@@ -68,6 +68,11 @@
 <script setup lang="ts">
 import { useMarks } from '~/composables/useMarks'
 
+const props = defineProps<{
+  buttonClass?: string;
+  id: string;
+}>();
+
 const { addMark } = useMarks()
 
 
@@ -77,11 +82,6 @@ const ects = ref<number | null>(null);
 const semester = ref<number | null>(null);
 const percentage = ref<number | null>(null);
 const mark = ref<number | null>(null);
-
-const props = defineProps<{
-  buttonClass?: string;
-  id: string;
-}>();
 
 const openModal = () => {
   modal.value?.showModal()
