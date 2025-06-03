@@ -21,23 +21,5 @@
         </div>
       </div>
     </div>
-    <div class="w-full flex justify-between gap-4 flex-wrap sm:flex-nowrap">
-      <div class="w-full">
-        <slot />
-      </div>
-      <div class="flex gap-4 justify-evenly flex-wrap">
-          <StatisticField :displayed-number="averageMark" description="Average Mark" />
-          <StatisticField :displayed-number="averagePercentage" description="Average Percentage"/>
-          <StatisticField :displayed-number="totalEcts" description="Total ECTS" />
-      </div>
-    </div>
   </div>
 </template>
-
-<script setup lang="ts">
-  defineProps<{
-    averageMark: string;
-    averagePercentage: string;
-    totalEcts: number;
-  }>();
-</script>

@@ -11,24 +11,29 @@
     </div>
   </header>
   <main class="p-4 flex flex-col gap-8 w-full relative">
-    <Hero
-        :average-mark="calculateAverage('mark').toFixed(2)"
-        :average-percentage="calculateAverage('percentage').toFixed(2)"
-        :total-ects="calculateTotal('ects')"
-    >
-        <div>
-          <MarkChart :marks-per-semester="averageMarksPerSemester" :isHigherMarkBetter="isHigherMarkBetter" />
-          <div class="flex items-center gap-2">
-            <label class="font-bold">Is a higher mark better?</label>
-            <input type="checkbox" v-model="isHigherMarkBetter" class="toggle toggle-primary" />
-          </div>
+    <Hero />
+    <div v-if="sortedMarks.length > 0" class="w-full flex justify-between gap-4 flex-wrap sm:flex-nowrap">
+      <div class="w-full">
+        <MarkChart :marks-per-semester="averageMarksPerSemester" :isHigherMarkBetter="isHigherMarkBetter" />
+        <div class="flex items-center gap-2">
+          <label class="font-bold">Is a higher mark better?</label>
+          <input type="checkbox" v-model="isHigherMarkBetter" class="toggle toggle-primary" />
         </div>
-    </Hero>
+      </div>
+      <div class="flex gap-4 justify-evenly flex-wrap">
+        <StatisticField :displayed-number="calculateAverage('mark').toFixed(2)" description="Average Mark" />
+        <StatisticField :displayed-number="calculateAverage('percentage').toFixed(2)" description="Average Percentage"/>
+        <StatisticField :displayed-number="calculateTotal('ects')" description="Total ECTS" />
+      </div>
+    </div>
 
     <div v-if="sortedMarks.length > 0">
 
       <div class="flex flex-col gap-4">
-        <h2 class="text-2xl">Saved Marks</h2>
+        <div class="flex justify-between items-center">
+          <h2 class="text-2xl">Saved Marks</h2>
+          <button class="btn btn-secondary" @click="deleteAllMarks">Delete all Marks</button>
+        </div>
         <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
           <table class="table">
             <thead>
@@ -112,6 +117,11 @@ const calculateAverage = (key: keyof Mark) =>
 
 const deleteMark = (index: number) => {
   savedMarks.value.splice(index, 1);
+  persistMark();
+};
+
+const deleteAllMarks = () => {
+  savedMarks.value = [];
   persistMark();
 };
 
