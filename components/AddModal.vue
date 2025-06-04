@@ -1,5 +1,5 @@
 <template>
-  <button class="btn btn-primary" :class="buttonClass" @click="openModal">
+  <Button class="btn-primary" :class="buttonClass" @click="openModal">
       <svg
           xmlns="http://www.w3.org/2000/svg"
           class="w-6 h-6"
@@ -20,7 +20,7 @@
     <span>
        Mark
       </span>
-    </button>
+    </Button>
 
   <dialog ref="modal" :id=id class="modal modal-bottom sm:modal-middle">
     <div class="flex flex-col gap-2 w-full sm:w-2/3">
@@ -52,10 +52,10 @@
 
           </div>
 
-          <div class="modal-action">
-            <button @click="saveMark(false)" class="btn btn-primary">Save and add another</button>
-            <button @click="saveMark(true)" class="btn btn-secondary">Save and close</button>
-            <button @click="closeModal" class="btn">x</button>
+          <div class="modal-action flex flex-col gap-2">
+            <Button @click="saveMark(false)" class="btn-primary">Save and add another</Button>
+            <Button @click="saveMark(true)" class="btn-secondary">Save and close</Button>
+            <Button @click="closeModal">Close without Save</Button>
           </div>
         </div>
 

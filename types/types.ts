@@ -11,4 +11,5 @@ export type MarksPerSemester = {
     average?: number;
     best?: number;
     worst?: number;
+    predicted?: number;
 };

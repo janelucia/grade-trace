@@ -34,27 +34,32 @@
           <div class="flex flex-col gap-2 sm:w-1/2">
             <div class="flex items-center justify-between gap-2">
               <h3 class="text-lg">Average Marks over the Semesters + Future</h3>
-              <button class="btn mb-2" @click="openModal">
+              <Button class="mb-2 w-fit!" @click="openModal">
                 ⚙️
-              </button>
+              </Button>
               <dialog class="modal modal-bottom sm:modal-middle w-full" ref="settingsModal" id="settingsModal">
                 <div class="flex flex-col gap-4 sm:gap-8 w-full sm:w-2/3 bg-base-100 p-4 rounded-box">
                   <h3 class="text-xl font-semibold">Settings</h3>
                   <p>
                     Provide the total number of semesters and ECTS credits in your program to improve the accuracy of the grade projection.
                   </p>
-                  <div class="flex flex-wrap gap-4 sm:gap-8">
-                    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-2">
-                      <label class="fieldset-legend bg-base-200 rounded-lg p-0 px-2">Total Number of Semesters</label>
-                      <input type="number" v-model.number="totalSemesters" class="input input-sm w-full" />
+                  <div class="flex flex-col gap-4 sm:gap-8">
+                    <div class="flex items-center sm:items-start gap-2">
+                      <label class="w-full">Total Number of Semesters</label>
+                      <input type="number" v-model.number="totalSemesters" class="input input-sm w-32 text-right px-6" />
                     </div>
-                    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-2">
-                      <label class="fieldset-legend bg-base-200 rounded-lg p-0 px-2">Total ECTS Credits</label>
-                      <input type="number" v-model.number="totalEcts" class="input input-sm w-full" />
+                    <div class="flex items-center sm:items-start gap-2">
+                      <label class="w-full">Total ECTS Credits</label>
+                      <input type="number" v-model.number="totalEcts" class="input input-sm w-32 text-right px-6" />
+                    </div>
+                    <div class="flex items-center sm:items-start gap-2">
+                      <label class="w-full">Set own Prediction</label>
+                      <input type="number" v-model.number="ownPrediction" class="input input-sm w-32 text-right px-6" />
+                      <Button v-if="ownPrediction > 0" class="btn-primary w-fit!" @click="ownPrediction = 0">Reset</Button>
                     </div>
                   </div>
                   <div class="modal-action">
-                    <button @click="settingsModal?.close()" class="btn btn-secondary">Close</button>
+                    <Button @click="settingsModal?.close()" class="btn-secondary w-full">Close</Button>
                   </div>
                 </div>
               </dialog>
@@ -70,7 +75,7 @@
       <div class="flex flex-col gap-4 sm:gap-8">
         <div class="flex justify-between items-center">
           <h2 class="text-2xl">Saved Marks</h2>
-          <button class="btn btn-secondary" @click="deleteAllMarks">Delete all Marks</button>
+          <Button class="btn-secondary w-fit!" @click="deleteAllMarks">Delete all Marks</Button>
         </div>
         <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
           <table class="table">
@@ -108,9 +113,9 @@
               </td>
               <td>
                 <div class="flex gap-2">
-                  <button v-if="editingIndex === index" @click="saveEditedMark(index)" class="btn btn-success btn-md">Save</button>
-                  <button v-else @click="editMark(index)" class="btn btn-info btn-md"><Icon name="material-symbols:edit-outline"/></button>
-                  <button @click="deleteMark(index)" class="btn btn-error btn-md"><Icon name="mdi:trash-can-outline"/></button>
+                  <Button v-if="editingIndex === index" @click="saveEditedMark(index)" class="btn-success btn-md">Save</Button>
+                  <Button v-else @click="editMark(index)" class="btn-info btn-md"><Icon name="material-symbols:edit-outline"/></Button>
+                  <Button @click="deleteMark(index)" class="btn-error btn-md"><Icon name="mdi:trash-can-outline"/></Button>
                 </div>
               </td>
             </tr>
@@ -132,6 +137,7 @@ const { savedMarks, loadMarks } = useMarks()
 const isHigherMarkBetter = ref(true);
 const totalSemesters = ref(7);
 const totalEcts = ref(185);
+const ownPrediction = ref(0);
 const settingsModal = ref(null);
 
 const editingIndex = ref<number | null>(null);
@@ -231,6 +237,7 @@ const cumulativeAverageWithProjection = computed(() => {
 
   let bestSum = weightedSum;
   let worstSum = weightedSum;
+  let predictedSum = weightedSum;
   let runningEcts = completedEcts;
 
   for (let i = 0; i < futureSemesters.length; i++) {
@@ -240,11 +247,14 @@ const cumulativeAverageWithProjection = computed(() => {
     runningEcts += ects;
     bestSum += (isHigherMarkBetter.value ? 5.0 : 1.0) * ects;
     worstSum += (isHigherMarkBetter.value ? 1.0 : 4.0) * ects;
+    predictedSum += ownPrediction.value * ects;
+
 
     result.push({
       semester,
       best: Number((bestSum / runningEcts).toFixed(2)),
       worst: Number((worstSum / runningEcts).toFixed(2)),
+      predicted: (ownPrediction.value > 0) ? Number((predictedSum / runningEcts).toFixed(2)) : undefined,
     });
   }
 
@@ -267,9 +277,11 @@ const storedPreference = () => {
   const higherMarkPref = localStorage.getItem('isHigherMarkBetter');
   const semestersPref = localStorage.getItem('totalSemesters');
   const ectsPref = localStorage.getItem('totalEcts');
+  const ownPredictionPref = localStorage.getItem('ownPrediction');
   if (higherMarkPref !== null) isHigherMarkBetter.value = JSON.parse(higherMarkPref);
   if (semestersPref !== null) totalSemesters.value = JSON.parse(semestersPref);
   if (ectsPref !== null) totalEcts.value = JSON.parse(ectsPref);
+  if (ownPredictionPref !== null) ownPrediction.value = JSON.parse(ownPredictionPref);
 };
 
 onMounted(() => {

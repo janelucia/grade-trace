@@ -1,5 +1,5 @@
 <template>
-  <button class="btn" :class="btnClass" @click="openModal">
+  <Button :class="btnClass" @click="openModal">
     <svg
         xmlns="http://www.w3.org/2000/svg"
         class="w-6 h-6"
@@ -20,20 +20,20 @@
     <span>
       Marks
     </span>
-  </button>
+  </Button>
   <dialog ref="modal" :id="id" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box">
       <h3 class="font-bold text-lg">File Upload</h3>
       <p class="py-4">Upload a file which adheres to the specifics of the template.</p>
       <div class="flex flex-col gap-4">
         <ExcelUpload />
-        <button class="btn btn-accent btn-lg" @click="downloadTemplate">
+        <Button class="btn-accent" @click="downloadTemplate">
           Download Excel Template
-        </button>
+        </Button>
       </div>
-      <div class="modal-action">
-        <form method="dialog">
-          <button class="btn">Close</button>
+      <div class="modal-action mt-4!">
+        <form method="dialog" class="w-full">
+          <Button class="btn-secondary">Close</Button>
         </form>
       </div>
     </div>

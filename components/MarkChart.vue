@@ -49,9 +49,16 @@ const createChart = () => {
       .filter(m => typeof m.worst === 'number')
       .map(m => ({ x: m.semester, y: m.worst! }));
 
+  const predicted = props.marksPerSemester
+      .filter(m => typeof m.predicted === 'number')
+      .map(m => ({ x: m.semester, y: m.predicted! }));
+
   if (lastActual) {
     best.unshift({ x: lastActual.x, y: lastActual.y });
     worst.unshift({ x: lastActual.x, y: lastActual.y });
+    if (predicted.length > 0) {
+      predicted.unshift({ x: lastActual.x, y: lastActual.y });
+    }
   }
 
 
@@ -86,6 +93,18 @@ const createChart = () => {
       fill: false,
       tension: 0,
     });
+  }
+
+  console.log(predicted);
+
+  if (predicted.length > 0) {
+    datasets.push({
+      label: "Own Prognose",
+      data: predicted,
+      borderColor: "orange",
+      borderDash: [2, 2],
+      tension: 0.3,
+    })
   }
 
 

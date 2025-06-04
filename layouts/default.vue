@@ -6,8 +6,8 @@
         <p class="p-0 font-bold hidden sm:inline-block">Semester<br/>Scoreboard</p>
       </div>
       <div class="flex gap-2">
-        <UploadModal id="file_upload_header"/>
-        <AddModal id="header-modal"/>
+        <UploadModal id="file_upload_header" btn-class="w-fit!" />
+        <AddModal id="header-modal" button-class="w-fit!"/>
       </div>
     </header>
     <main class="flex-1 p-4 flex flex-col gap-8 sm:gap-16 w-full relative">
