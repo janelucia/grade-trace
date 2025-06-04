@@ -4,8 +4,21 @@
       accept=".xlsx, .csv"
       ref="fileInput"
       @change="handleFileUpload"
-      class="file-input file-input-bordered file-input-lg w-full"
+      class="hidden"
+      id="upload"
   />
+
+    <label
+        for="upload"
+        class="btn sm:btn-lg btn-accent w-full flex items-center justify-between px-4"
+    >
+      <span class="flex-shrink-0">
+      📁
+      </span>
+      <span class="absolute left-1/2 transform -translate-x-1/2">
+      Upload file
+      </span>
+    </label>
 
   <Teleport to="body">
     <div
@@ -38,6 +51,7 @@ import { utils, read } from 'xlsx'
 import { useMarks } from '~/composables/useMarks'
 import { useUploadedFiles } from '~/composables/useUploadedFiles'
 
+const emit = defineEmits(['upload-complete'])
 const showToast = ref(false)
 const toastMessage = ref('')
 const alertColor = ref('')
@@ -115,6 +129,7 @@ const handleFileUpload = async (event: Event) => {
         (duplicateCount > 0 ? ` ${duplicateCount} duplicate(s) skipped.` : '') +
         (invalidCount > 0 ? ` ${invalidCount} invalid entr${invalidCount === 1 ? 'y' : 'ies'} skipped.` : '')
     alertColor.value = 'alert-success'
+    emit('upload-complete')
   } else if (duplicateCount > 0 || invalidCount > 0) {
     toastMessage.value = `File "${file.name}" processed. ${
         duplicateCount > 0 ? `${duplicateCount} duplicate(s)` : ''
@@ -124,6 +139,7 @@ const handleFileUpload = async (event: Event) => {
         invalidCount > 0 ? `${invalidCount} invalid entr${invalidCount === 1 ? 'y' : 'ies'}` : ''
     } skipped.`
     alertColor.value = 'alert-warning'
+    emit('upload-complete')
   } else {
     toastMessage.value = `File "${file.name}" processed. No valid data found.`
     alertColor.value = 'alert-error'

@@ -22,45 +22,59 @@
       </span>
     </Button>
 
-  <dialog ref="modal" :id=id class="modal modal-bottom sm:modal-middle">
-    <div class="flex flex-col gap-2 w-full sm:w-2/3">
-      <fieldset class="fieldset w-full bg-base-200 border border-base-300 p-4 rounded-box">
-        <legend class="fieldset-legend text-xl bg-base-200 rounded-lg p-0 px-2">Add a mark</legend>
+  <dialog ref="modal" :id="id" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+      <h3 class="text-xl font-semibold mb-4">Add a Mark</h3>
 
-        <div class="flex flex-col gap-4">
-
-          <div class="flex flex-col sm:flex-row gap-4">
-
-            <div class="flex flex-col gap-2 w-full">
-              <label class="fieldset-label">Module name</label>
-              <input v-model="moduleName" type="text" class="input w-full" placeholder="eg: Math 1" />
-
-              <label class="fieldset-label">ECTS</label>
-              <input v-model.number="ects" type="number" class="input w-full" placeholder="eg: 7.5" />
-
-              <label class="fieldset-label">Semester</label>
-              <input v-model.number="semester" type="number" class="input w-full" placeholder="eg: 1" />
+      <div class="flex flex-col gap-6">
+        <div class="flex flex-col sm:flex-row gap-6">
+          <div class="flex flex-col gap-4 w-full">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Module name</span>
+              </label>
+              <input v-model="moduleName" type="text" class="input input-bordered w-full" placeholder="e.g. Math 1" />
             </div>
 
-            <div class="flex flex-col gap-2 w-full">
-              <label class="fieldset-label">Percentage</label>
-              <input v-model.number="percentage" type="number" class="input w-full" placeholder="eg: 80" />
-
-              <label class="fieldset-label">Mark</label>
-              <input v-model.number="mark" type="number" class="input w-full" placeholder="eg: 2.0" />
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">ECTS</span>
+              </label>
+              <input v-model.number="ects" type="number" class="input input-bordered w-full" placeholder="e.g. 7.5" />
             </div>
 
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Semester</span>
+              </label>
+              <input v-model.number="semester" type="number" class="input input-bordered w-full" placeholder="e.g. 1" />
+            </div>
           </div>
+          <div class="flex flex-col gap-4 w-full">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Percentage</span>
+              </label>
+              <input v-model.number="percentage" type="number" class="input input-bordered w-full" placeholder="e.g. 80" />
+            </div>
 
-          <div class="modal-action flex flex-col gap-2">
-            <Button @click="saveMark(false)" class="btn-primary w-full">Save and add another</Button>
-            <Button @click="saveMark(true)" class="btn-secondary w-full">Save and close</Button>
-            <Button @click="closeModal" class="w-full">Close without Save</Button>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Mark</span>
+              </label>
+              <input v-model.number="mark" type="number" class="input input-bordered w-full" placeholder="e.g. 2.0" />
+            </div>
           </div>
         </div>
+        <div class="modal-action flex flex-col gap-2">
+          <Button @click="saveMark(false)" class="btn-primary w-full">Save and add another</Button>
+          <Button @click="saveMark(true)" class="btn-secondary w-full">Save and close</Button>
 
-
-      </fieldset>
+          <form method="dialog" class="w-full">
+            <Button class="w-full">Close without saving</Button>
+          </form>
+        </div>
+      </div>
     </div>
   </dialog>
 </template>

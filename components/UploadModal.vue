@@ -23,12 +23,15 @@
   </Button>
   <dialog ref="modal" :id="id" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box">
-      <h3 class="font-bold text-lg">File Upload</h3>
+      <h3 class="text-xl font-semibold">File Upload</h3>
       <p class="py-4">Upload a file which adheres to the specifics of the template.</p>
       <div class="flex flex-col gap-4">
-        <ExcelUpload />
-        <Button class="btn-accent w-full" @click="downloadTemplate">
-          Download Excel Template
+        <ExcelUpload @upload-complete="modal.close()" />
+        <Button class="btn w-full relative flex items-center justify-between px-4" @click="downloadTemplate">
+          <span class="flex-shrink-0">📥</span>
+          <span class="absolute left-1/2 transform -translate-x-1/2">
+            Download Excel Template
+          </span>
         </Button>
       </div>
       <div class="modal-action mt-4!">
