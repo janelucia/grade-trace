@@ -7,10 +7,39 @@
       <div class="w-full flex flex-col gap-4 sm:gap-8">
         <div class="flex justify-between items-center gap-4 sm:gap-8">
           <h2 class="text-2xl">Statistics</h2>
-          <div class="flex items-center gap-2">
-            <label class="font-bold">Is a higher mark better?</label>
-            <input type="checkbox" v-model="isHigherMarkBetter" class="toggle toggle-primary" />
-          </div>
+          <Button class="btn-primary btn-dash w-fit!" @click="openModal">
+            ⚙️
+          </Button>
+          <dialog class="modal modal-bottom sm:modal-middle w-full" ref="settingsModal" id="settingsModal">
+            <div class="flex flex-col gap-4 sm:gap-8 w-full sm:w-2/3 bg-base-100 p-4 rounded-box">
+              <h3 class="text-xl font-semibold">Settings</h3>
+              <p>
+                Provide the total number of semesters and ECTS credits in your program to improve the accuracy of the grade projection.
+              </p>
+              <div class="flex flex-col gap-4 sm:gap-8">
+                <div class="flex items-center sm:items-start gap-2">
+                  <label class="w-full">Is a higher mark better?</label>
+                  <input type="checkbox" v-model="isHigherMarkBetter" class="toggle toggle-primary" />
+                </div>
+                <div class="flex items-center sm:items-start gap-2">
+                  <label class="w-full">Total Number of Semesters</label>
+                  <input type="number" v-model.number="totalSemesters" class="input input-sm w-32 text-right px-6" />
+                </div>
+                <div class="flex items-center sm:items-start gap-2">
+                  <label class="w-full">Total ECTS Credits</label>
+                  <input type="number" v-model.number="totalEcts" class="input input-sm w-32 text-right px-6" />
+                </div>
+                <div class="flex items-center sm:items-start gap-2">
+                  <label class="w-full">Set own Prediction</label>
+                  <input type="number" v-model.number="ownPrediction" class="input input-sm w-32 text-right px-6" />
+                  <Button v-if="ownPrediction > 0" class="btn-primary w-fit!" @click="ownPrediction = 0">Reset</Button>
+                </div>
+              </div>
+              <div class="modal-action">
+                <Button @click="settingsModal?.close()" class="btn-secondary w-full">Close</Button>
+              </div>
+            </div>
+          </dialog>
         </div>
         <div class="flex gap-4 sm:gap-8 justify-center sm:justify-between items-center flex-wrap">
           <StatisticField icon="Ø" description="Current Average">
@@ -34,35 +63,6 @@
           <div class="flex flex-col gap-2 sm:w-1/2">
             <div class="flex items-center justify-between gap-2">
               <h3 class="text-lg">Average Marks over the Semesters + Future</h3>
-              <Button class="mb-2 w-fit!" @click="openModal">
-                ⚙️
-              </Button>
-              <dialog class="modal modal-bottom sm:modal-middle w-full" ref="settingsModal" id="settingsModal">
-                <div class="flex flex-col gap-4 sm:gap-8 w-full sm:w-2/3 bg-base-100 p-4 rounded-box">
-                  <h3 class="text-xl font-semibold">Settings</h3>
-                  <p>
-                    Provide the total number of semesters and ECTS credits in your program to improve the accuracy of the grade projection.
-                  </p>
-                  <div class="flex flex-col gap-4 sm:gap-8">
-                    <div class="flex items-center sm:items-start gap-2">
-                      <label class="w-full">Total Number of Semesters</label>
-                      <input type="number" v-model.number="totalSemesters" class="input input-sm w-32 text-right px-6" />
-                    </div>
-                    <div class="flex items-center sm:items-start gap-2">
-                      <label class="w-full">Total ECTS Credits</label>
-                      <input type="number" v-model.number="totalEcts" class="input input-sm w-32 text-right px-6" />
-                    </div>
-                    <div class="flex items-center sm:items-start gap-2">
-                      <label class="w-full">Set own Prediction</label>
-                      <input type="number" v-model.number="ownPrediction" class="input input-sm w-32 text-right px-6" />
-                      <Button v-if="ownPrediction > 0" class="btn-primary w-fit!" @click="ownPrediction = 0">Reset</Button>
-                    </div>
-                  </div>
-                  <div class="modal-action">
-                    <Button @click="settingsModal?.close()" class="btn-secondary w-full">Close</Button>
-                  </div>
-                </div>
-              </dialog>
             </div>
             <MarkChart :marks-per-semester="cumulativeAverageWithProjection" :isHigherMarkBetter="isHigherMarkBetter" />
           </div>
