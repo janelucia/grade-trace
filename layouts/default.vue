@@ -21,9 +21,6 @@
       <a href="https://github.com/janelucia/remark" class="link link-neutral flex items-center" target="_blank">
         <Icon name="octicon:mark-github-16" />
       </a>
-      <div class="tooltip hover:tooltip-open tooltip-top tooltip-info" data-tip="The images/ logos are AI generated.">
-        <button class="btn btn-sm btn-dash btn-info">i</button>
-      </div>
     </footer>
   </div>
 </template>
