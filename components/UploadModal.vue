@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import * as XLSX from "xlsx";
+import { utils, write } from 'xlsx';
 
 defineProps<{
   id: string;
@@ -65,11 +65,11 @@ const templateData = [
 ]
 
 const downloadTemplate = () => {
-  const worksheet = XLSX.utils.json_to_sheet(templateData)
-  const workbook = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Marks Template')
+  const worksheet = utils.json_to_sheet(templateData)
+  const workbook = utils.book_new()
+  utils.book_append_sheet(workbook, worksheet, 'Marks Template')
 
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
+  const excelBuffer = write(workbook, { bookType: 'xlsx', type: 'array' })
 
   const blob = new Blob([excelBuffer], { type: 'application/octet-stream' })
   const link = document.createElement('a')

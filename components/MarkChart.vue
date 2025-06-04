@@ -95,8 +95,6 @@ const createChart = () => {
     });
   }
 
-  console.log(predicted);
-
   if (predicted.length > 0) {
     datasets.push({
       label: "Own Prognose",
