@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { read, utils } from 'xlsx'
+import * as XLSX from 'xlsx'
 import { useMarks } from '~/composables/useMarks'
 import { useUploadedFiles } from '~/composables/useUploadedFiles'
 
@@ -68,10 +68,10 @@ const handleFileUpload = async (event: Event) => {
   if (!file) return
 
   const data = await file.arrayBuffer()
-  const workbook = read(data)
+  const workbook = XLSX.read(data)
   const sheetName = workbook.SheetNames[0]
   const worksheet = workbook.Sheets[sheetName]
-  const json = utils.sheet_to_json(worksheet)
+  const json = XLSX.utils.sheet_to_json(worksheet)
 
   let addedCount = 0
   let duplicateCount = 0
