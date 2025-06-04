@@ -1,5 +1,5 @@
 <template>
-  <button class="btn sm:btn-lg w-full sm:w-1/2">
+  <button class="btn sm:btn-lg">
     <slot />
   </button>
 </template>

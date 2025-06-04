@@ -1,5 +1,5 @@
 <template>
-  <Button class="btn-primary" :class="buttonClass" @click="openModal">
+  <Button class="btn-primary w-fit" :class="btnClass" @click="openModal">
       <svg
           xmlns="http://www.w3.org/2000/svg"
           class="w-6 h-6"
@@ -53,9 +53,9 @@
           </div>
 
           <div class="modal-action flex flex-col gap-2">
-            <Button @click="saveMark(false)" class="btn-primary">Save and add another</Button>
-            <Button @click="saveMark(true)" class="btn-secondary">Save and close</Button>
-            <Button @click="closeModal">Close without Save</Button>
+            <Button @click="saveMark(false)" class="btn-primary w-full">Save and add another</Button>
+            <Button @click="saveMark(true)" class="btn-secondary w-full">Save and close</Button>
+            <Button @click="closeModal" class="w-full">Close without Save</Button>
           </div>
         </div>
 
@@ -69,7 +69,7 @@
 import { useMarks } from '~/composables/useMarks'
 
 const props = defineProps<{
-  buttonClass?: string;
+  btnClass?: string;
   id: string;
 }>();
 

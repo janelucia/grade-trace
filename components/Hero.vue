@@ -9,8 +9,8 @@
           </div>
           <h2 class="text-4xl font-bold">Make a mark today!</h2>
           <div class="flex gap-2 items-center justify-center sm:justify-start flex-wrap">
-            <AddModal button-class="w-fit!" id="hero-modal" />
-            <UploadModal id="file_upload_hero" btn-class="w-fit!"/>
+            <AddModal id="hero-modal" btn-class="w-full sm:w-fit" />
+            <UploadModal id="file_upload_hero" btn-class="w-full sm:w-fit"/>
           </div>
         </div>
         <div class="flex flex-col gap-2 w-full items-end">

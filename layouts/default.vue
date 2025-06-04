@@ -5,8 +5,8 @@
         <NuxtImg src="./img/logo.png" alt="Logo" class="w-20 sm:w-32" />
       </div>
       <div class="flex gap-2">
-        <UploadModal id="file_upload_header" btn-class="w-fit!" />
-        <AddModal id="header-modal" button-class="w-fit!"/>
+        <UploadModal id="file_upload_header" />
+        <AddModal id="header-modal" />
       </div>
     </header>
     <main class="flex-1 p-4 flex flex-col gap-8 sm:gap-16 w-full relative">

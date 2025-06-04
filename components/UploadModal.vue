@@ -1,5 +1,5 @@
 <template>
-  <Button :class="btnClass" @click="openModal">
+  <Button class="w-fit" :class="btnClass" @click="openModal">
     <svg
         xmlns="http://www.w3.org/2000/svg"
         class="w-6 h-6"
@@ -27,13 +27,13 @@
       <p class="py-4">Upload a file which adheres to the specifics of the template.</p>
       <div class="flex flex-col gap-4">
         <ExcelUpload />
-        <Button class="btn-accent" @click="downloadTemplate">
+        <Button class="btn-accent w-full" @click="downloadTemplate">
           Download Excel Template
         </Button>
       </div>
       <div class="modal-action mt-4!">
         <form method="dialog" class="w-full">
-          <Button class="btn-secondary">Close</Button>
+          <Button class="btn-secondary w-full">Close</Button>
         </form>
       </div>
     </div>

@@ -7,7 +7,7 @@
       <div class="w-full flex flex-col gap-4 sm:gap-8">
         <div class="flex justify-between items-center gap-4 sm:gap-8">
           <h2 class="text-2xl">Statistics</h2>
-          <Button class="btn-primary btn-dash w-fit!" @click="openModal">
+          <Button class="btn-primary btn-dash w-fit" @click="openModal">
             ⚙️
           </Button>
           <dialog class="modal modal-bottom sm:modal-middle w-full" ref="settingsModal" id="settingsModal">
@@ -32,7 +32,7 @@
                 <div class="flex items-center sm:items-start gap-2">
                   <label class="w-full">Set own Prediction</label>
                   <input type="number" v-model.number="ownPrediction" class="input input-sm w-32 text-right px-6" />
-                  <Button v-if="ownPrediction > 0" class="btn-primary w-fit!" @click="ownPrediction = 0">Reset</Button>
+                  <Button v-if="ownPrediction > 0" class="btn-primary w-fit" @click="ownPrediction = 0">Reset</Button>
                 </div>
               </div>
               <div class="modal-action">
