@@ -1,16 +1,18 @@
 <template>
   <NuxtLayout>
     <Hero />
-    <div v-if="sortedMarks.length > 0" class="w-full flex justify-between gap-4 flex-wrap sm:flex-nowrap">
-      <div class="w-full flex flex-col gap-4">
-        <div class="flex justify-between items-center gap-4">
+
+    <!-- Statistics Section -->
+    <div v-if="sortedMarks.length > 0" class="w-full flex justify-between flex-wrap sm:flex-nowrap">
+      <div class="w-full flex flex-col gap-4 sm:gap-8">
+        <div class="flex justify-between items-center gap-4 sm:gap-8">
           <h2 class="text-2xl">Statistics</h2>
           <div class="flex items-center gap-2">
             <label class="font-bold">Is a higher mark better?</label>
             <input type="checkbox" v-model="isHigherMarkBetter" class="toggle toggle-primary" />
           </div>
         </div>
-        <div class="flex gap-4 justify-center sm:justify-evenly items-center flex-wrap">
+        <div class="flex gap-4 sm:gap-8 justify-center sm:justify-between items-center flex-wrap">
           <StatisticField icon="Ø" description="Current Average">
             {{ calculateAverage('mark').toFixed(2) }} / {{calculateAverage('percentage').toFixed(2)}} %
           </StatisticField>
@@ -24,7 +26,7 @@
             {{calculateTotal('ects')}}
           </StatisticField>
         </div>
-        <div class="flex flex-col sm:flex-row gap-4">
+        <div class="flex flex-col sm:flex-row gap-4 sm:gap-8">
           <div class="flex flex-col gap-2 sm:w-1/2 justify-between">
             <h3 class="text-lg">Average Marks per Semester</h3>
             <MarkChart :marks-per-semester="averageMarksPerSemester" :isHigherMarkBetter="isHigherMarkBetter" />
@@ -36,12 +38,12 @@
                 ⚙️
               </button>
               <dialog class="modal modal-bottom sm:modal-middle w-full" ref="settingsModal" id="settingsModal">
-                <div class="flex flex-col gap-4 w-full sm:w-2/3 bg-base-100 p-4 rounded-box">
+                <div class="flex flex-col gap-4 sm:gap-8 w-full sm:w-2/3 bg-base-100 p-4 rounded-box">
                   <h3 class="text-xl font-semibold">Settings</h3>
                   <p>
                     Provide the total number of semesters and ECTS credits in your program to improve the accuracy of the grade projection.
                   </p>
-                  <div class="flex flex-wrap gap-4">
+                  <div class="flex flex-wrap gap-4 sm:gap-8">
                     <div class="flex flex-col sm:flex-row items-center sm:items-start gap-2">
                       <label class="fieldset-legend bg-base-200 rounded-lg p-0 px-2">Total Number of Semesters</label>
                       <input type="number" v-model.number="totalSemesters" class="input input-sm w-full" />
@@ -63,9 +65,9 @@
       </div>
     </div>
 
+    <!-- Saved Marks Section -->
     <div v-if="sortedMarks.length > 0">
-
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4 sm:gap-8">
         <div class="flex justify-between items-center">
           <h2 class="text-2xl">Saved Marks</h2>
           <button class="btn btn-secondary" @click="deleteAllMarks">Delete all Marks</button>

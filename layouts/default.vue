@@ -10,7 +10,7 @@
         <AddModal id="header-modal"/>
       </div>
     </header>
-    <main class="flex-1 p-4 flex flex-col gap-8 w-full relative">
+    <main class="flex-1 p-4 flex flex-col gap-8 sm:gap-16 w-full relative">
       <slot />
     </main>
     <footer class="p-4 w-full flex justify-center items-center gap-4">
