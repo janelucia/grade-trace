@@ -14,7 +14,7 @@
           </div>
         </div>
         <div class="flex flex-col gap-2 w-full items-end">
-          <NuxtImg class="w-full h-full object-cover rounded-lg" src="img/hero-pic.png" alt="Hero Image" />
+          <NuxtImg format="webp" class="w-full h-full object-cover rounded-lg" src="img/hero-pic.png" alt="Hero Image" />
         </div>
       </div>
     </div>

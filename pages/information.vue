@@ -35,7 +35,7 @@
 
     <!-- Image Section -->
     <div class="flex-1 max-w-lg">
-      <NuxtImg src="/img/information-picture.png" alt="Privacy illustration" class="w-full rounded-xl" />
+      <NuxtImg format="webp" src="/img/information-picture.png" alt="Privacy illustration" class="w-full rounded-xl" />
     </div>
   </div>
 </template>

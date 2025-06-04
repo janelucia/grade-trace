@@ -5,7 +5,7 @@
         <!-- Logo on the left -->
         <div class="navbar-start">
           <NuxtLink to="/" class="flex items-center gap-2">
-            <NuxtImg src="./img/logo.png" alt="Logo" class="w-20 sm:w-32 ml-2" />
+            <NuxtImg format="webp" src="./img/logo.png" alt="Logo" class="w-20 sm:w-32 ml-2" />
           </NuxtLink>
         </div>
 
