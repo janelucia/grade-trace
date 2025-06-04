@@ -10,10 +10,19 @@
             <input type="checkbox" v-model="isHigherMarkBetter" class="toggle toggle-primary" />
           </div>
         </div>
-        <div class="flex gap-4 justify-evenly items-center flex-wrap">
-          <StatisticField :displayed-number="calculateAverage('mark').toFixed(2)" description="Average Mark" />
-          <StatisticField :displayed-number="calculateAverage('percentage').toFixed(2)" description="Average Percentage"/>
-          <StatisticField :displayed-number="calculateTotal('ects')" description="Total ECTS" />
+        <div class="flex gap-4 justify-center sm:justify-evenly items-center flex-wrap">
+          <StatisticField icon="Ø" description="Current Average">
+            {{ calculateAverage('mark').toFixed(2) }} / {{calculateAverage('percentage').toFixed(2)}} %
+          </StatisticField>
+          <StatisticField icon="📈" description="Best Prediction">
+            {{ cumulativeAverageWithProjection.at(-1)?.best?.toFixed(2) || 'N/A' }}
+          </StatisticField>
+          <StatisticField icon="📉" description="Worst Prediction">
+            {{ cumulativeAverageWithProjection.at(-1)?.worst?.toFixed(2) || 'N/A' }}
+          </StatisticField>
+          <StatisticField icon="✅" description="Completed ECTS">
+            {{calculateTotal('ects')}}
+          </StatisticField>
         </div>
         <div class="flex flex-col sm:flex-row gap-4">
           <div class="flex flex-col gap-2 sm:w-1/2 justify-between">
