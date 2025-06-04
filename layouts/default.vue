@@ -2,8 +2,7 @@
   <div class="min-h-screen flex flex-col">
     <header class="p-4 sticky top-0 w-full z-10 bg-base-100 flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <NuxtImg src="./img/logo.png" alt="Logo" class="w-16 h-16" />
-        <p class="p-0 font-bold hidden sm:inline-block">Semester<br/>Scoreboard</p>
+        <NuxtImg src="./img/logo.png" alt="Logo" class="w-20 sm:w-32" />
       </div>
       <div class="flex gap-2">
         <UploadModal id="file_upload_header" btn-class="w-fit!" />

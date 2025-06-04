@@ -15,7 +15,7 @@ export default defineNuxtConfig({
   modules: ['@nuxt/icon', '@nuxt/image'],
   app: {
     head: {
-      title: 'SemesterScoreboard',
+      title: 'GradeTrace',
     }
   },
 })
