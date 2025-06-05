@@ -1,4 +1,5 @@
 <template>
+    <Onboarding />
     <Hero />
     <!-- Statistics Section -->
     <section id="statistics"  class="scroll-mt-24">
@@ -15,25 +16,7 @@
                 <p>
                   Provide the total number of semesters and ECTS credits in your program to improve the accuracy of the grade projection.
                 </p>
-                <div class="flex flex-col gap-4 sm:gap-8">
-                  <div class="flex items-center sm:items-start gap-2">
-                    <label class="w-full">Is a higher mark better?</label>
-                    <input type="checkbox" v-model="settings.isHigherMarkBetter" class="toggle toggle-primary" />
-                  </div>
-                  <div class="flex items-center sm:items-start gap-2">
-                    <label class="w-full">Total Number of Semesters</label>
-                    <input type="number" v-model.number="settings.totalSemesters" class="input input-sm w-32 text-right px-6" />
-                  </div>
-                  <div class="flex items-center sm:items-start gap-2">
-                    <label class="w-full">Total ECTS Credits</label>
-                    <input type="number" v-model.number="settings.totalEcts" class="input input-sm w-32 text-right px-6" />
-                  </div>
-                  <div class="flex items-center sm:items-start gap-2">
-                    <label class="w-full">Set own Prediction</label>
-                    <input type="number" v-model.number="settings.ownPrediction" class="input input-sm w-32 text-right px-6" />
-                    <Button v-if="settings.ownPrediction > 0" class="btn-primary w-fit" @click="settings.ownPrediction = 0">Reset</Button>
-                  </div>
-                </div>
+                <SettingsPanel />
                 <div class="modal-action">
                   <Button @click="settingsModal?.close()" class="btn-secondary w-full">Close</Button>
                 </div>
@@ -136,7 +119,7 @@
 </template>
 
 <script setup lang="ts">
-import type {Mark, MarksPerSemester} from "~/types/types";
+import type {Mark} from "~/types/types";
 import { useMarks } from '~/composables/useMarks'
 import {
   calculateAverage,
@@ -144,6 +127,7 @@ import {
   getAverageMarksPerSemester,
   getCumulativeAverageWithProjection
 } from "~/helpers/statistics";
+import SettingsPanel from "~/components/SettingsPanel.vue";
 
 const { savedMarks, loadMarks, removeMark, clearMarks, hasMarks, updateMark } = useMarks()
 
