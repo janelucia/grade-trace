@@ -21,31 +21,22 @@
       Marks
     </span>
   </Button>
-  <dialog ref="modal" :id="id" class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box">
-      <UploadDialogContent @upload-complete="modal.value?.close()" />
-      <div class="modal-action mt-4!">
-        <form method="dialog" class="w-full">
-          <Button class="btn-secondary w-full">Close</Button>
-        </form>
-      </div>
-    </div>
-  </dialog>
+  <BaseModal ref="modal" :id="id" showClose>
+    <UploadDialogContent @upload-complete="modal?.value?.close()" />
+  </BaseModal>
 </template>
 
 <script setup lang="ts">
+import BaseModal from '~/components/BaseModal.vue'
 
 defineProps<{
   id: string;
   btnClass?: string;
 }>()
 
-const modal = ref(null)
+const modal = ref<InstanceType<typeof BaseModal> | null>(null)
 
 const openModal = () => {
-  modal.value?.showModal()
+  modal.value?.open()
 }
-
-
-
 </script>

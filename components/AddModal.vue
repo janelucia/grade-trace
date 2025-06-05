@@ -22,83 +22,82 @@
       </span>
     </Button>
 
-  <dialog ref="modal" :id="id" class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box">
-      <h3 class="text-xl font-semibold mb-4">Add a Mark</h3>
+  <BaseModal ref="modal" :id="id">
+    <h3 class="text-xl font-semibold mb-4">Add a Mark</h3>
 
-      <div class="flex flex-col gap-6">
-        <div class="flex flex-col sm:flex-row gap-6">
-          <div class="flex flex-col gap-4 w-full">
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Module name</span>
-              </label>
-              <input v-model="moduleName" type="text" class="input input-bordered w-full" placeholder="e.g. Math 1" />
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">ECTS</span>
-              </label>
-              <input v-model.number="ects" type="number" class="input input-bordered w-full" placeholder="e.g. 7.5" />
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Semester</span>
-              </label>
-              <input v-model.number="semester" type="number" class="input input-bordered w-full" placeholder="e.g. 1" />
-            </div>
+    <div class="flex flex-col gap-6">
+      <div class="flex flex-col sm:flex-row gap-6">
+        <div class="flex flex-col gap-4 w-full">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Module name</span>
+            </label>
+            <input v-model="moduleName" type="text" class="input input-bordered w-full" placeholder="e.g. Math 1" />
           </div>
-          <div class="flex flex-col gap-4 w-full">
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Percentage</span>
-              </label>
-              <input v-model.number="percentage" type="number" class="input input-bordered w-full" placeholder="e.g. 80" />
-            </div>
 
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Mark</span>
-              </label>
-              <input v-model.number="mark" type="number" class="input input-bordered w-full" placeholder="e.g. 2.0" />
-            </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">ECTS</span>
+            </label>
+            <input v-model.number="ects" type="number" class="input input-bordered w-full" placeholder="e.g. 7.5" />
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Semester</span>
+            </label>
+            <input v-model.number="semester" type="number" class="input input-bordered w-full" placeholder="e.g. 1" />
           </div>
         </div>
-        <div class="modal-action flex flex-col gap-2">
-          <Button @click="saveMark(false)" class="btn-primary w-full">Save and add another</Button>
-          <Button @click="saveMark(true)" class="btn-secondary w-full">Save and close</Button>
+        <div class="flex flex-col gap-4 w-full">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Percentage</span>
+            </label>
+            <input v-model.number="percentage" type="number" class="input input-bordered w-full" placeholder="e.g. 80" />
+          </div>
 
-          <form method="dialog" class="w-full">
-            <Button class="w-full">Close without saving</Button>
-          </form>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Mark</span>
+            </label>
+            <input v-model.number="mark" type="number" class="input input-bordered w-full" placeholder="e.g. 2.0" />
+          </div>
         </div>
       </div>
+      <div class="modal-action flex flex-col gap-2">
+        <Button @click="saveMark(false)" class="btn-primary w-full">Save and add another</Button>
+        <Button @click="saveMark(true)" class="btn-secondary w-full">Save and close</Button>
+
+        <form method="dialog" class="w-full">
+          <Button class="w-full">Close without saving</Button>
+        </form>
+      </div>
     </div>
-  </dialog>
+  </BaseModal>
 </template>
 
 <script setup lang="ts">
 import { useMarks } from '~/composables/useMarks'
+import BaseModal from "~/components/BaseModal.vue";
 
-const props = defineProps<{
+defineProps<{
   btnClass?: string;
   id: string;
 }>();
 
 const { addMark } = useMarks()
 
-
-const modal = ref(null)
 const moduleName = ref('');
 const ects = ref<number | null>(null);
 const semester = ref<number | null>(null);
 const percentage = ref<number | null>(null);
 const mark = ref<number | null>(null);
 
+const modal = ref<InstanceType<typeof BaseModal> | null>(null)
+
 const openModal = () => {
-  modal.value?.showModal()
+  modal.value?.open()
 }
 
 const saveMark = (withClose: boolean) => {
@@ -123,13 +122,8 @@ const saveMark = (withClose: boolean) => {
   mark.value = null;
 
   if (withClose) {
-    closeModal()
+    modal?.value?.close()
   }
 };
-
-const closeModal = () => {
-  const modal = document.getElementById(props.id) as HTMLDialogElement;
-  modal.close();
-}
 
 </script>

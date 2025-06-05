@@ -1,6 +1,6 @@
 <template>
-  <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-base-100/90">
-    <div class="w-full max-w-xl bg-base-100 rounded-box p-6 shadow-lg border border-base-content/10 flex flex-col gap-6">
+  <BaseModal ref="modalRef" v-if="show" :id="'onboarding-modal'" :persistent="true">
+  <div class="flex flex-col gap-6">
       <!-- Logo at the top -->
       <div class="flex flex-col items-center gap-2">
         <NuxtImg format="webp" src="./img/logo.png" alt="Grade Trace Logo" class="h-12" />
@@ -16,7 +16,6 @@
         <ul class="list-disc list-inside space-y-1 text-base-content/70">
           <li>
             Add modules with both percentage and grade, along with their ECTS.
-            <br />
             <p class="text-sm text-base-content/60 pl-8 py-2">
               Note: The percentage provides a more detailed view of your performance.
               For example, a 1.0 grade covers anything from 95% to 100% in the German grading system.
@@ -29,7 +28,6 @@
           <Button @click="finish" class="btn-secondary">Start</Button>
           <Button @click="step++" class="btn-primary self-end">Next</Button>
         </div>
-
       </template>
 
       <template v-else-if="step === 2">
@@ -37,7 +35,6 @@
           <h2 class="text-xl font-semibold">Setup your preferences ⚙️</h2>
           <SettingsPanel onboarding />
         </div>
-
         <div class="flex justify-end gap-4">
           <Button @click="step--" class="btn-outline">Back</Button>
           <Button @click="step++" class="btn-primary self-end">Next</Button>
@@ -48,29 +45,29 @@
         <div class="flex flex-col gap-4">
           <h2 class="text-xl font-semibold">Upload your Marks </h2>
           <p class="text-base-content/80">
-            To skip this step and add marks later, click "Start" below. Otherwise, add your Marks and upload them now. Afterwards, click "Start".
+            To skip this step and add marks later, click "Start" below. Otherwise, upload your Marks now.
           </p>
           <UploadDialogContent />
         </div>
-
         <div class="flex justify-end gap-4">
           <Button @click="step--" class="btn-outline">Back</Button>
           <Button @click="finish" class="btn-primary">Start</Button>
         </div>
       </template>
-
     </div>
-  </div>
+  </BaseModal>
 </template>
 
 <script setup lang="ts">
+import SettingsPanel from '~/components/SettingsPanel.vue'
+import BaseModal from '~/components/BaseModal.vue'
+import { useMarks } from '~/composables/useMarks'
 
-import SettingsPanel from "~/components/SettingsPanel.vue";
-
-const { hasMarks } = useMarks()
-
+const { hasMarks, loadMarks } = useMarks()
 const step = ref(1)
 const show = ref(false)
+
+const modalRef = ref<InstanceType<typeof BaseModal> | null>(null)
 
 const finish = () => {
   localStorage.setItem('onboardingShown', 'true')
@@ -78,7 +75,21 @@ const finish = () => {
 }
 
 onMounted(() => {
+  loadMarks()
   const alreadyShown = localStorage.getItem('onboardingShown')
-  if (!alreadyShown && !hasMarks.value) show.value = true
+  if (!alreadyShown && !hasMarks.value) {
+    show.value = true
+  } else if(!alreadyShown && hasMarks.value) {
+    finish()
+  }
+})
+
+watch(show, (newVal) => {
+  if (newVal) {
+    nextTick(() => {
+      modalRef.value?.open()
+    })
+  }
 })
 </script>
+
