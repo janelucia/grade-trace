@@ -66,7 +66,32 @@
         <div class="flex flex-col gap-4 sm:gap-8">
           <div class="flex justify-between items-center">
             <h2 class="text-2xl">Saved Marks</h2>
-            <Button class="btn-secondary w-fit!" @click="deleteAllMarks" aria-label="Delete mark">Delete all Marks</Button>
+            <div class="flex flex-wrap gap-2 justify-end">
+              <Button class="btn-primary w-fit" @click="downloadMarks" aria-label="Download marks">
+                <Icon name="material-symbols:download" />
+                <span class="hidden sm:inline">
+                  Download Excel
+                </span>
+              </Button>
+
+              <Button class="btn-secondary w-fit" @click="confirmDeleteModal?.open()" aria-label="Delete mark">
+                <Icon name="mdi:trash-can-outline" />
+                <span class="hidden sm:inline">Delete all Marks</span>
+              </Button>
+              <BaseModal ref="confirmDeleteModal" id="confirm-delete-modal">
+                <div class="flex flex-col gap-4">
+                  <h3 class="text-xl font-bold">Delete all Marks?</h3>
+                  <p class="text-base-content/80">
+                    This will remove all your saved marks. This action cannot be undone.
+                  </p>
+                  <div class="flex justify-end gap-2">
+                    <Button @click="confirmDeleteModal?.close()" class="btn-outline">Cancel</Button>
+                    <Button @click="confirmAndDeleteAllMarks" class="btn-error">Delete All</Button>
+                  </div>
+                </div>
+              </BaseModal>
+
+            </div>
           </div>
           <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
             <table class="table">
@@ -119,6 +144,7 @@
 </template>
 
 <script setup lang="ts">
+import { utils, writeFile } from 'xlsx'
 import type {Mark} from "~/types/types";
 import { useMarks } from '~/composables/useMarks'
 import {
@@ -128,9 +154,11 @@ import {
   getCumulativeAverageWithProjection
 } from "~/helpers/statistics";
 import SettingsPanel from "~/components/SettingsPanel.vue";
+import type BaseModal from "~/components/BaseModal.vue";
 
 const { savedMarks, loadMarks, removeMark, clearMarks, hasMarks, updateMark } = useMarks()
 
+const confirmDeleteModal = ref<InstanceType<typeof BaseModal> | null>(null)
 const settingsModal = ref(null);
 const settings = reactive({
   isHigherMarkBetter: true,
@@ -143,12 +171,30 @@ const settings = reactive({
 const editingIndex = ref<number | null>(null);
 const editableMark = ref<Mark>({ moduleName: '', ects: 0, semester: 0, percentage: 0, mark: 0 });
 
+const downloadMarks = () => {
+  if (savedMarks.value.length === 0) {
+    alert('No marks to download.')
+    return
+  }
+
+  const worksheet = utils.json_to_sheet(savedMarks.value)
+  const workbook = utils.book_new()
+  utils.book_append_sheet(workbook, worksheet, 'Marks')
+
+  writeFile(workbook, 'grade-trace-marks.xlsx')
+}
+
 const openModal = () => {
   settingsModal.value?.showModal();
 }
 
 const deleteMark = (index: number) => removeMark(index)
-const deleteAllMarks = () => clearMarks()
+
+const confirmAndDeleteAllMarks = () => {
+  clearMarks()
+  confirmDeleteModal.value?.close()
+}
+
 
 const startEditing = (index: number) => {
   editingIndex.value = index;
