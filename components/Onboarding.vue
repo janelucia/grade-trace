@@ -14,7 +14,14 @@
           </p>
         </div>
         <ul class="list-disc list-inside space-y-1 text-base-content/70">
-          <li>Add modules with grades, percentages, and ECTS.</li>
+          <li>
+            Add modules with both percentage and grade, along with their ECTS.
+            <br />
+            <p class="text-sm text-base-content/60 pl-8 py-2">
+              Note: The percentage provides a more detailed view of your performance.
+              For example, a 1.0 grade covers anything from 95% to 100% in the German grading system.
+            </p>
+          </li>
           <li>Get automatic average and grade predictions.</li>
           <li>Visualize your academic journey semester by semester.</li>
         </ul>
