@@ -44,15 +44,15 @@
             <StatisticField description="Completed ECTS">
               <div
                   class="radial-progress text-accent"
-                  :style="{ '--value': (calculateTotal(savedMarks,'ects') / settings.totalEcts * 100) }"
-                  :aria-valuenow="calculateTotal(savedMarks,'ects') / settings.totalEcts * 100"
+                  :style="{ '--value': (totalCompletedEcts / settings.totalEcts * 100) }"
+                  :aria-valuenow="totalCompletedEcts / settings.totalEcts * 100"
                   role="progressbar"
               >
-                {{ ((calculateTotal(savedMarks, 'ects') / settings.totalEcts) * 100).toFixed(0) }}%
+                {{ ((totalCompletedEcts / settings.totalEcts) * 100).toFixed(0) }}%
               </div>
             </StatisticField>
             <StatisticField icon="Ø" description="Current Average">
-              {{ calculateAverage(savedMarks, 'mark').toFixed(2) }} / {{calculateAverage(savedMarks, 'percentage').toFixed(2)}} %
+              {{ currentAverage.toFixed(2) }} / {{ percentageAverage.toFixed(2) }} %
             </StatisticField>
             <StatisticField icon="📈" description="Best Prediction">
               {{ cumulativeAverageWithProjection.at(-1)?.best?.toFixed(2) || 'N/A' }}
@@ -83,7 +83,7 @@
         <div class="flex flex-col gap-4 sm:gap-8">
           <div class="flex justify-between items-center">
             <h2 class="text-2xl">Saved Marks</h2>
-            <Button class="btn-secondary w-fit!" @click="deleteAllMarks">Delete all Marks</Button>
+            <Button class="btn-secondary w-fit!" @click="deleteAllMarks" aria-label="Delete mark">Delete all Marks</Button>
           </div>
           <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
             <table class="table">
@@ -186,6 +186,18 @@ const cumulativeAverageWithProjection = computed(() =>
         settings
     )
 )
+const totalCompletedEcts = computed(() =>
+    calculateTotal(savedMarks.value, 'ects')
+)
+
+const currentAverage = computed(() =>
+    calculateAverage(savedMarks.value, 'mark')
+)
+
+const percentageAverage = computed(() =>
+    calculateAverage(savedMarks.value, 'percentage')
+)
+
 
 watch(settings, () => {
   localStorage.setItem('gradeSettings', JSON.stringify(settings))
