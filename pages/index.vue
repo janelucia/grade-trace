@@ -121,8 +121,8 @@
                 </td>
                 <td>
                   <div class="flex gap-2">
-                    <Button v-if="editingIndex === index" @click="saveEditedMark(index)" class="btn-success btn-md">Save</Button>
-                    <Button v-else @click="editMark(index)" class="btn-info btn-md"><Icon name="material-symbols:edit-outline"/></Button>
+                    <Button v-if="editingIndex === index" @click="saveEdit(index)" class="btn-success btn-md">Save</Button>
+                    <Button v-else @click="startEditing(index)" class="btn-info btn-md"><Icon name="material-symbols:edit-outline"/></Button>
                     <Button @click="deleteMark(index)" class="btn-error btn-md"><Icon name="mdi:trash-can-outline"/></Button>
                   </div>
                 </td>
@@ -166,12 +166,12 @@ const openModal = () => {
 const deleteMark = (index: number) => removeMark(index)
 const deleteAllMarks = () => clearMarks()
 
-const editMark = (index: number) => {
+const startEditing = (index: number) => {
   editingIndex.value = index;
   editableMark.value = { ...savedMarks.value[index] };
 };
 
-const saveEditedMark = (index: number) => {
+const saveEdit = (index: number) => {
   updateMark(index, { ...editableMark.value })
   editingIndex.value = null
 }
