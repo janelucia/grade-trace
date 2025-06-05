@@ -1,14 +1,16 @@
 <template>
-  <dialog ref="modalRef" :id="id" class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box">
-      <slot />
-      <div v-if="showClose" class="modal-action mt-4">
-        <form method="dialog" class="w-full">
-          <Button class="btn-secondary w-full">Close</Button>
-        </form>
+  <teleport to="body">
+    <dialog ref="modalRef" :id="id" class="modal modal-bottom sm:modal-middle">
+      <div class="modal-box">
+        <slot />
+        <div v-if="showClose" class="modal-action mt-4">
+          <form method="dialog" class="w-full">
+            <Button class="btn-secondary w-full">Close</Button>
+          </form>
+        </div>
       </div>
-    </div>
-  </dialog>
+    </dialog>
+  </teleport>
 </template>
 
 <script setup lang="ts">
