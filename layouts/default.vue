@@ -12,8 +12,8 @@
         <!-- Desktop Nav -->
         <div class="hidden lg:flex navbar-center">
           <ul class="menu menu-horizontal px-1">
-            <li v-if="isHome"><a href="#statistics" class="btn btn-ghost btn-lg">Statistics</a></li>
-            <li v-if="isHome"><a href="#saved-marks" class="btn btn-ghost btn-lg">Saved Marks</a></li>
+            <li v-if="isHome && hasMarks"><a href="#statistics" class="btn btn-ghost btn-lg">Statistics</a></li>
+            <li v-if="isHome && hasMarks"><a href="#saved-marks" class="btn btn-ghost btn-lg">Saved Marks</a></li>
             <li v-if="isInformation"><NuxtLink to="/" class="btn btn-ghost btn-lg">Home</NuxtLink></li>
             <li v-if="isHome"><NuxtLink to="/information" class="btn btn-ghost btn-lg">Information</NuxtLink></li>
           </ul>
@@ -40,8 +40,8 @@
             <ul
                 v-show="dropdownOpen"
                 class="absolute right-0 mt-3 w-56 p-2 gap-4 z-10 menu menu-sm dropdown-content bg-base-100 rounded-box shadow">
-              <li v-if="isHome"><a href="#statistics" class="text-lg py-2" @click="dropdownOpen = false">Statistics</a></li>
-              <li v-if="isHome"><a href="#saved-marks" class="text-lg py-2" @click="dropdownOpen = false">Saved Marks</a></li>
+              <li v-if="isHome && hasMarks"><a href="#statistics" class="text-lg py-2" @click="dropdownOpen = false">Statistics</a></li>
+              <li v-if="isHome && hasMarks"><a href="#saved-marks" class="text-lg py-2" @click="dropdownOpen = false">Saved Marks</a></li>
               <li v-if="isInformation"><NuxtLink to="/" class="text-lg py-2" @click="dropdownOpen = false">Home</NuxtLink></li>
               <li v-if="isHome"><NuxtLink to="/information" class="text-lg py-2" @click="dropdownOpen = false">Information</NuxtLink></li>
               <li><UploadModal id="file_upload_header_mobile" btn-class="w-full" /></li>
@@ -73,13 +73,22 @@ import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
+const { hasMarks, loadMarks } = useMarks()
+
 
 const isHome = computed(() => route.path === '/')
 const isInformation = computed(() => route.path === '/information')
 
 const dropdownOpen = ref(false)
 
+
 watch(() => route.path, () => {
   dropdownOpen.value = false
+})
+
+
+// Make sure marks are loaded on mount
+onMounted(() => {
+  loadMarks()
 })
 </script>

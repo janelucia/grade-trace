@@ -13,3 +13,10 @@ export type MarksPerSemester = {
     worst?: number;
     predicted?: number;
 };
+
+export type Settings = {
+    isHigherMarkBetter: boolean;
+    ownPrediction: number;
+    totalEcts: number;
+    totalSemesters: number;
+}
