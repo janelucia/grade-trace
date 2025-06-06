@@ -24,15 +24,8 @@
             </dialog>
           </div>
           <div class="flex gap-4 sm:gap-8 justify-center sm:justify-between items-center flex-wrap">
-            <StatisticField description="Completed ECTS">
-              <div
-                  class="radial-progress text-accent"
-                  :style="{ '--value': (totalCompletedEcts / settings.totalEcts * 100) }"
-                  :aria-valuenow="totalCompletedEcts / settings.totalEcts * 100"
-                  role="progressbar"
-              >
-                {{ ((totalCompletedEcts / settings.totalEcts) * 100).toFixed(0) }}%
-              </div>
+            <StatisticField icon="✅" description="Completed ECTS">
+                {{ totalCompletedEcts }} / {{ settings.totalEcts }}
             </StatisticField>
             <StatisticField icon="Ø" description="Current Average">
               {{ currentAverage.toFixed(2) }} / {{ percentageAverage.toFixed(2) }} %
