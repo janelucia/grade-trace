@@ -141,8 +141,7 @@ import { utils, writeFile } from 'xlsx'
 import type {Mark} from "~/types/types";
 import { useMarks } from '~/composables/useMarks'
 import {
-  calculateAverage,
-  calculateTotal,
+  calculateTotal, calculateWeightedAverage,
   getAverageMarksPerSemester,
   getCumulativeAverageWithProjection
 } from "~/helpers/statistics";
@@ -214,11 +213,11 @@ const totalCompletedEcts = computed(() =>
 )
 
 const currentAverage = computed(() =>
-    calculateAverage(modulesWithMarks.value, 'mark')
+    calculateWeightedAverage(modulesWithMarks.value, 'mark')
 )
 
 const percentageAverage = computed(() =>
-    calculateAverage(modulesWithMarks.value, 'percentage')
+    calculateWeightedAverage(modulesWithMarks.value, 'percentage')
 )
 
 

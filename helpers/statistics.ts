@@ -4,20 +4,33 @@ export function calculateTotal(marks: Mark[], key: keyof Mark): number {
     return marks.reduce((acc, mark) => acc + Number(mark[key]), 0)
 }
 
-export function calculateAverage(marks: Mark[], key: keyof Mark): number {
-    return marks.length ? calculateTotal(marks, key) / marks.length : 0
+export function calculateWeightedAverage(marks: Mark[], key: keyof Mark): number {
+    const totalWeight = marks.reduce((sum, m) => sum + m.ects, 0)
+    if (totalWeight === 0) return 0
+
+    const weightedSum = marks.reduce((sum, m) => sum + (m[key] as number) * m.ects, 0)
+    console.log(`Weighted sum: ${weightedSum}, Total weight: ${totalWeight}`)
+    return weightedSum / totalWeight
 }
 
+
 export function getAverageMarksPerSemester(marks: Mark[]): { semester: number, average: number }[] {
-    const grouped: Record<number, number[]> = {}
-    marks.forEach(({ semester, mark }) => {
+    const grouped: Record<number, { mark: number; ects: number }[]> = {}
+
+    marks.forEach(({ semester, mark, ects }) => {
         grouped[semester] = grouped[semester] || []
-        grouped[semester].push(mark)
+        grouped[semester].push({ mark, ects })
     })
-    return Object.entries(grouped).map(([semester, marks]) => ({
-        semester: Number(semester),
-        average: Number((marks.reduce((sum, m) => sum + m, 0) / marks.length).toFixed(2))
-    }))
+
+    return Object.entries(grouped).map(([semester, entries]) => {
+        const totalEcts = entries.reduce((sum, entry) => sum + entry.ects, 0)
+        const weightedSum = entries.reduce((sum, entry) => sum + entry.mark * entry.ects, 0)
+
+        return {
+            semester: Number(semester),
+            average: totalEcts > 0 ? Number((weightedSum / totalEcts).toFixed(2)) : 0
+        }
+    })
 }
 
 export function getCumulativeAverageWithProjection(
