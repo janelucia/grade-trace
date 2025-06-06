@@ -54,14 +54,14 @@
             <label class="label">
               <span class="label-text">Percentage</span>
             </label>
-            <input v-model.number="percentage" type="number" class="input input-bordered w-full" placeholder="e.g. 80" />
+            <input v-model.number="percentage" type="number" class="input input-bordered w-full" placeholder="e.g. 80 or 0 (no percentage)" />
           </div>
 
           <div class="form-control">
             <label class="label">
               <span class="label-text">Mark</span>
             </label>
-            <input v-model.number="mark" type="number" class="input input-bordered w-full" placeholder="e.g. 2.0" />
+            <input v-model.number="mark" type="number" class="input input-bordered w-full" placeholder="e.g. 2.0 or 0 (no mark)" />
           </div>
         </div>
       </div>

@@ -206,13 +206,18 @@ const saveEdit = (index: number) => {
   editingIndex.value = null
 }
 
+const modulesWithMarks = computed(() =>
+    savedMarks.value.filter(({ mark, percentage }) => mark !== 0 || percentage !== 0)
+)
+
+
 const averageMarksPerSemester = computed(() =>
-    getAverageMarksPerSemester(savedMarks.value)
+    getAverageMarksPerSemester(modulesWithMarks.value)
 )
 
 const cumulativeAverageWithProjection = computed(() =>
     getCumulativeAverageWithProjection(
-        savedMarks.value,
+        modulesWithMarks.value,
         settings
     )
 )
@@ -221,11 +226,11 @@ const totalCompletedEcts = computed(() =>
 )
 
 const currentAverage = computed(() =>
-    calculateAverage(savedMarks.value, 'mark')
+    calculateAverage(modulesWithMarks.value, 'mark')
 )
 
 const percentageAverage = computed(() =>
-    calculateAverage(savedMarks.value, 'percentage')
+    calculateAverage(modulesWithMarks.value, 'percentage')
 )
 
 
