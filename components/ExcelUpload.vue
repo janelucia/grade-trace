@@ -8,23 +8,16 @@
       id="upload"
   />
 
-    <label
-        for="upload"
-        class="btn sm:btn-lg btn-accent w-full flex items-center justify-between px-4"
-    >
-      <span class="flex-shrink-0">
-      📁
-      </span>
-      <span class="absolute left-1/2 transform -translate-x-1/2">
-      Upload file
-      </span>
-    </label>
+  <label
+      for="upload"
+      class="btn sm:btn-lg btn-accent w-full flex items-center justify-between px-4"
+  >
+    <span class="flex-shrink-0">📁</span>
+    <span class="absolute left-1/2 transform -translate-x-1/2">Upload file</span>
+  </label>
 
   <Teleport to="body">
-    <div
-        v-if="showToast"
-        class="toast toast-top toast-end fixed z-[9999] m-4"
-    >
+    <div v-if="showToast" class="toast toast-top toast-end fixed z-[9999] m-4">
       <div class="alert text-wrap" :class="alertColor">
         <span>{{ toastMessage }}</span>
       </div>
@@ -34,13 +27,8 @@
   <div class="mt-4">
     <h3 class="font-bold mb-2">Uploaded Files</h3>
     <ul>
-      <li
-          v-for="file in uploadedFiles"
-          :key="file.name"
-          class="text-sm"
-      >
-        📄 {{ file.name }} — last uploaded at
-        {{ file.uploadedAt.toLocaleString() }}
+      <li v-for="file in uploadedFiles" :key="file.name" class="text-sm">
+        📄 {{ file.name }} — last uploaded at {{ file.uploadedAt.toLocaleString() }}
       </li>
     </ul>
   </div>
@@ -52,6 +40,7 @@ import { useMarks } from '~/composables/useMarks'
 import { useUploadedFiles } from '~/composables/useUploadedFiles'
 
 const emit = defineEmits(['upload-complete'])
+
 const showToast = ref(false)
 const toastMessage = ref('')
 const alertColor = ref('')
@@ -71,8 +60,10 @@ const isValidMarkRow = (row: any) => {
 
   const valuesAreInRange =
       Number(row.ects) > 0 &&
-      Number(row.percentage) >= 0 && Number(row.percentage) <= 100 &&
-      Number(row.mark) >= 1 && Number(row.mark) <= 5 // Adjust to your grading scale
+      Number(row.percentage) >= 0 &&
+      Number(row.percentage) <= 100 &&
+      Number(row.mark) >= 1 &&
+      Number(row.mark) <= 5
 
   return hasRequiredFields && valuesAreInRange
 }
@@ -88,28 +79,46 @@ const handleFileUpload = async (event: Event) => {
   const json = utils.sheet_to_json(worksheet)
 
   let addedCount = 0
+  let updatedCount = 0
   let duplicateCount = 0
   let invalidCount = 0
 
   json.forEach((row: any) => {
-    const alreadyExists = savedMarks.value.some(
-        (m) =>
-            m.moduleName.toLowerCase().trim() ===
-            row.moduleName?.toLowerCase().trim()
-    )
-
     if (!isValidMarkRow(row)) {
       invalidCount++
-    } else if (alreadyExists) {
-      duplicateCount++
+      return
+    }
+
+    const index = savedMarks.value.findIndex(
+        (m) =>
+            m.moduleName.toLowerCase().trim() === row.moduleName?.toLowerCase().trim()
+    )
+
+    const newMark = {
+      moduleName: row.moduleName.trim(),
+      ects: Number(row.ects),
+      semester: Number(row.semester),
+      percentage: Number(row.percentage),
+      mark: Number(row.mark),
+    }
+
+    if (index !== -1) {
+      const existing = savedMarks.value[index]
+
+      const isChanged =
+          existing.ects !== newMark.ects ||
+          existing.semester !== newMark.semester ||
+          existing.percentage !== newMark.percentage ||
+          existing.mark !== newMark.mark
+
+      if (isChanged) {
+        savedMarks.value[index] = { ...existing, ...newMark }
+        updatedCount++
+      } else {
+        duplicateCount++
+      }
     } else {
-      addMark({
-        moduleName: row.moduleName.trim(),
-        ects: Number(row.ects),
-        semester: Number(row.semester),
-        percentage: Number(row.percentage),
-        mark: Number(row.mark),
-      })
+      addMark(newMark)
       addedCount++
     }
   })
@@ -124,26 +133,15 @@ const handleFileUpload = async (event: Event) => {
     })
   }
 
-  if (addedCount > 0) {
-    toastMessage.value = `File "${file.name}" processed. ${addedCount} new mark(s) added.` +
-        (duplicateCount > 0 ? ` ${duplicateCount} duplicate(s) skipped.` : '') +
-        (invalidCount > 0 ? ` ${invalidCount} invalid entr${invalidCount === 1 ? 'y' : 'ies'} skipped.` : '')
-    alertColor.value = 'alert-success'
-    emit('upload-complete')
-  } else if (duplicateCount > 0 || invalidCount > 0) {
-    toastMessage.value = `File "${file.name}" processed. ${
-        duplicateCount > 0 ? `${duplicateCount} duplicate(s)` : ''
-    }${
-        duplicateCount > 0 && invalidCount > 0 ? ' and ' : ''
-    }${
-        invalidCount > 0 ? `${invalidCount} invalid entr${invalidCount === 1 ? 'y' : 'ies'}` : ''
-    } skipped.`
-    alertColor.value = 'alert-warning'
-    emit('upload-complete')
-  } else {
-    toastMessage.value = `File "${file.name}" processed. No valid data found.`
-    alertColor.value = 'alert-error'
-  }
+  const fileSummary = []
+  if (addedCount > 0) fileSummary.push(`${addedCount} neu`)
+  if (updatedCount > 0) fileSummary.push(`${updatedCount} aktualisiert`)
+  if (duplicateCount > 0) fileSummary.push(`${duplicateCount} Duplikate`)
+  if (invalidCount > 0) fileSummary.push(`${invalidCount} ungültig`)
+
+  toastMessage.value = `Datei "${file.name}" verarbeitet: ${fileSummary.join(', ')}.`
+  alertColor.value = addedCount > 0 || updatedCount > 0 ? 'alert-success' : 'alert-warning'
+  emit('upload-complete')
 
   showToast.value = true
   setTimeout(() => (showToast.value = false), 3000)
@@ -167,5 +165,4 @@ onMounted(() => {
 watch(uploadedFiles, (newVal) => {
   localStorage.setItem('uploadedFiles', JSON.stringify(newVal))
 }, { deep: true })
-
 </script>
