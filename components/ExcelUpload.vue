@@ -62,7 +62,7 @@ const isValidMarkRow = (row: any) => {
       Number(row.ects) > 0 &&
       Number(row.percentage) >= 0 &&
       Number(row.percentage) <= 100 &&
-      Number(row.mark) >= 1 &&
+      Number(row.mark) >= 0 &&
       Number(row.mark) <= 5
 
   return hasRequiredFields && valuesAreInRange
