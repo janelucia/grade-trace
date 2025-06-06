@@ -155,17 +155,13 @@ import {
 } from "~/helpers/statistics";
 import SettingsPanel from "~/components/SettingsPanel.vue";
 import type BaseModal from "~/components/BaseModal.vue";
+import {useSettings} from "#imports";
 
 const { savedMarks, loadMarks, removeMark, clearMarks, hasMarks, updateMark } = useMarks()
 
 const confirmDeleteModal = ref<InstanceType<typeof BaseModal> | null>(null)
 const settingsModal = ref(null);
-const settings = reactive({
-  isHigherMarkBetter: true,
-  totalSemesters: 7,
-  totalEcts: 185,
-  ownPrediction: 0,
-})
+const settings = useSettings()
 
 
 const editingIndex = ref<number | null>(null);
@@ -209,7 +205,6 @@ const saveEdit = (index: number) => {
 const modulesWithMarks = computed(() =>
     savedMarks.value.filter(({ mark, percentage }) => mark !== 0 || percentage !== 0)
 )
-
 
 const averageMarksPerSemester = computed(() =>
     getAverageMarksPerSemester(modulesWithMarks.value)
